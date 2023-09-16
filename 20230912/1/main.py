@@ -1,5 +1,5 @@
 def sort(arr: list):
-    if(len(arr) <= 1):
+    if len(arr) <= 1:
         return arr
     arr1 = [x for x in arr[1:] if x < arr[0]]
     arr2 = [x for x in arr if x == arr[0]]
