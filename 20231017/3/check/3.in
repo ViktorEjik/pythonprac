@@ -1,0 +1,9 @@
+6
+The key-function patterns shown above are very common,
+ so Python provides convenience functions to make accessor
+ functions easier and faster. The operator module has itemgetter(),
+ attrgetter(), and a methodcaller() function.
+
+Using those functions, the above examples become simpler and faster:
+
+
