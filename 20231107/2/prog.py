@@ -21,10 +21,37 @@ class InvalidInput(Exception):
     def __str__(self) -> str:
         return 'Invalid input'
 
+
 class BadTriangle(Exception):
-    pass
+    def __str__(self) -> str:
+        return 'Not a triangle'
+
 
 def triangleSquare(inStr):
-    (x1, y1), (x2, y2), (x3, y3) = eval(inStr)
-    
+    try:
+        (x1, y1), (x2, y2), (x3, y3) = eval(inStr)
+    except Exception:
+        raise InvalidInput()
+    try:
+        sqere = 0.5 * abs((x1-x3)*(y2-y3) - (x2 - x3)*(y1 - y3))
+    except Exception:
+        raise BadTriangle()
+    if sqere == 0:
+        raise BadTriangle()
+    return sqere
 
+
+def main():
+    flag = True
+    while flag:
+        inStr = input()
+        try:
+            res = triangleSquare(inStr)
+        except (InvalidInput, BadTriangle) as error:
+            print(error)
+        else:
+            print(f'{res:.2f}')
+            flag = False
+
+if __name__ == '__main__':
+    main()
