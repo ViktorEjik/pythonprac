@@ -1,0 +1,10 @@
+class C:
+  num = Num()
+print(C().num)
+c, d, b = C(), C(), C()
+c.num = d.num = 2
+b.num = '100500'
+print(c.num+d.num)
+print(c.num+b.num)
+d.num = range(10, 1000, 7)
+print(c.num+d.num + b.num)

@@ -1,0 +1,10 @@
+@objcount
+class C:
+    pass
+
+l = list()
+for i in range(10):
+    l.append(C())
+
+print(C.counter)
+

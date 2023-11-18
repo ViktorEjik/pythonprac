@@ -1,0 +1,10 @@
+class C:
+  num = Num()
+
+l = list()
+for i in range(100):
+    tmp = C()
+    tmp.num = i
+    l.append(tmp)
+
+print(sum(list(map(lambda x: x.num, l))))
