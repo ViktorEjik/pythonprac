@@ -1,0 +1,3 @@
+print(*fib(4, 5))
+for i in range(5, 10):
+    print(*fib(4, i))

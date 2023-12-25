@@ -9,3 +9,6 @@ def slide(seq, n):
         k += 1
         yield from x
 
+
+import sys
+exec(sys.stdin.read())

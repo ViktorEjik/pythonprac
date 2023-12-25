@@ -32,3 +32,8 @@ class Omnibus:
             return
         self.attr.remove(__name)
         Omnibus.d[__name] -= 1
+
+
+import sys
+exec(sys.stdin.read())
+

@@ -8,3 +8,5 @@ def fib(n, m):
         x = f_2 + f_1
         f_1, f_2 = f_2, x
 
+import sys
+exec(sys.stdin.read())

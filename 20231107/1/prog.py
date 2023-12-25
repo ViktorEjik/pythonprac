@@ -20,11 +20,5 @@ class DivStr(UserString):
         mod = len(self) % other
         return self[len(self) - mod:]
 
-if __name__ == '__main__':
-    a = DivStr("XcDfQWEasdERTdfgRTY")
-    print(*(a // 4))
-    print(a % 4)
-    print(* a % 10 // 3)
-    print(a.lower() % 3)
-    print(* a[1:7] // 3)
-    print(a % 5 + DivStr() + a % 6)
+import sys
+exec(sys.stdin.read())

@@ -1,0 +1,5 @@
+a, b, c = Omnibus(), Omnibus(), Omnibus()
+a.i = a.j = a.k = True
+b.j = b.k = b.n = False
+c.k = c.n = c.m = hex
+print(a.i, a.j, a.k, b.j, b.k, b.n, c.k, c.n, c.m)

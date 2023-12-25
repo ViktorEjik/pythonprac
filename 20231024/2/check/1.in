@@ -1,0 +1,3 @@
+print(*list(slide(range(5), 3)))
+print(*list(slide(range(5), 4)))
+print(*list(slide(range(10), 3)))

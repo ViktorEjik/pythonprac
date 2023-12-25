@@ -1,0 +1,7 @@
+a = DivStr("XcDfQWEasdERTdfgRTYFJNBFLDMNVKLSLFNRFNDLBNVDVM")
+print(*(a // 5))
+print(a % 5)
+print(* a % 10 // 2)
+print(a.lower() % 2)
+print(* a[1:7] // 2)
+print(a % 5 + DivStr() + a % 9)
