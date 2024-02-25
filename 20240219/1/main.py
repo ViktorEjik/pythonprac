@@ -28,6 +28,9 @@ def main():
                     game.addmon((x, y), hello)
                 except exeptions.ReplaseMonster:
                     ans += '\nReplaced the old monster'
+                except exeptions.IncorectArgument:
+                    print('Invalid arguments')
+                    continue
                 finally:
                     print(ans)
 
