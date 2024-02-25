@@ -31,9 +31,9 @@ class Player:
         )
 
 class Monster:
-    def __init__(self, hellow) -> None:
+    def __init__(self, name, hellow) -> None:
         self.hellow = hellow
         self.name = name
     
     def boo(self):
-        return cowsay(self.hellow)
+        return cowsay(message=self.hellow, cow=self.name)
