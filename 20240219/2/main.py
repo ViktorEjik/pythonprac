@@ -1,15 +1,15 @@
-from logic import Map, Game
-from entity import Monster, Player
 import exeptions
+from entity import Player
+from logic import Game, Map
 
 
 def main():
-    game = Game(Map(), Player()) 
-    
+    game = Game(Map(), Player())
+
     while comand := input():
         comand = comand.split()
         match comand:
-            case ['left'| 'right' | 'up' | 'down']:
+            case ['left' | 'right' | 'up' | 'down']:
                 res = game.go_to(comand[0])
                 print(f'Moved to ({res[0][0]}, {res[0][1]})')
                 if res[1]:
