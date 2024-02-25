@@ -15,8 +15,8 @@ def main():
                 if res[1]:
                     print(res[1])
 
-            case ['addmon', name, x, y, hello]:
-
+            case ['addmon', name, x, y, *hello]:
+                hello = " ".join(hello)
                 try:
                     x, y = int(x), int(y)
                 except Exception:
