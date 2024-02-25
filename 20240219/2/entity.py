@@ -33,6 +33,8 @@ class Player:
 class Monster:
     def __init__(self, name, hellow) -> None:
         self.hellow = hellow
+        if name not in list_cows():
+            raise exeptions.UnknownMonster
         self.name = name
     
     def boo(self):

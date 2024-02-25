@@ -26,6 +26,9 @@ def main():
                 ans = f'Added monster {name} to ({x}, {y}) saying {hello}'
                 try:
                     game.addmon((x, y), name, hello)
+                except exeptions.UnknownMonster:
+                    print('Cannot add unknown monster')
+                    continue
                 except exeptions.ReplaseMonster:
                     ans += '\nReplaced the old monster'
                 except exeptions.IncorectArgument:
