@@ -1,4 +1,5 @@
-from cowsay import cowsay
+from cowsay import cowsay, list_cows
+import exeptions
 
 
 MAP_LENGTH = 10
@@ -32,6 +33,7 @@ class Player:
 class Monster:
     def __init__(self, hellow) -> None:
         self.hellow = hellow
+        self.name = name
     
     def boo(self):
         return cowsay(self.hellow)

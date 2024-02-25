@@ -15,17 +15,17 @@ def main():
                 if res[1]:
                     print(res[1])
 
-            case ['addmon', x, y, hello]:
+            case ['addmon', name, x, y, hello]:
 
                 try:
                     x, y = int(x), int(y)
                 except Exception:
                     print('Invalid arguments')
                     continue
-                
-                ans = f'Added monster to ({x}, {y}) saying {hello}'
+
+                ans = f'Added monster {name} to ({x}, {y}) saying {hello}'
                 try:
-                    game.addmon((x, y), hello)
+                    game.addmon((x, y), name, hello)
                 except exeptions.ReplaseMonster:
                     ans += '\nReplaced the old monster'
                 except exeptions.IncorectArgument:

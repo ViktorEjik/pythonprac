@@ -30,10 +30,13 @@ class Game:
         self.map = map
         self.player = player
     
-    def addmon(self, position, hellow):
-        monster = Monster(hellow)
+    def addmon(self, position, name, hellow):
+        monster = Monster(name, hellow)
         try:
+            monster = Monster(name, hellow)
             self.map.set_evant(position, monster)
+        except exeptions.UnknownMonster as err:
+            raise err
         except exeptions.ReplaseMonster as err:
             raise err
         except Exception:

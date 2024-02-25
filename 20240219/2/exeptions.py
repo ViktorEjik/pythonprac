@@ -3,3 +3,7 @@ class ReplaseMonster(Exception):
 
 class IncorectArgument(Exception):
     pass
+
+
+class UnknownMonster(Exception):
+    pass
