@@ -31,8 +31,7 @@ def main():
                 except exeptions.IncorectArgument:
                     print('Invalid arguments')
                     continue
-                finally:
-                    print(ans)
+                print(ans)
 
             case _:
                 print('Invalid command')
