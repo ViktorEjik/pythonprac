@@ -5,7 +5,7 @@ from logic import Game, Map
 
 def main():
     game = Game(Map(), Player())
-
+    print('<<< Welcome to Python-MUD 0.1 >>>')
     while comand := input():
         comand = comand.split()
         match comand:
