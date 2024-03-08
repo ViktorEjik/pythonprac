@@ -6,7 +6,7 @@ from logic import Game, Map
 def main():
     game = Game(Map(), Player())
     print('<<< Welcome to Python-MUD 0.1 >>>')
-    while comand := input():
+    while comand := input('>>'):
         comand = comand.split()
         match comand:
             case ['left' | 'right' | 'up' | 'down']:
@@ -15,17 +15,45 @@ def main():
                 if res[1]:
                     print(res[1])
 
-            case ['addmon', name, x, y, *hello]:
-                hello = " ".join(hello)
+            case ['addmon', *other]:
+                i = 1
+                tmp = dict()
+                tmp['name'] = other[0]
+                if len(other) < 8:
+                    print('Invalid arguments', other)
+                    continue
                 try:
-                    x, y = int(x), int(y)
-                except Exception:
+                    while i < len(other):
+                            match other[i]:
+                                case 'hello':
+                                    hello = list()
+                                    i += 1
+                                    while i < len(other):
+                                        if other[i] not in ['hello', 'hp', 'coords']:
+                                            hello.append(other[i])
+                                            i += 1
+                                        else:
+                                            break
+                                    print(i)
+                                    tmp['hello'] = ' '.join(hello)[1:-1]
+                                case 'hp':
+                                    tmp['hp'] = int(other[i+1])
+                                    i += 2
+                                case 'coords':
+                                    tmp['coords'] = (int(other[i+1]), int(other[i+2]))
+                                    i += 3
+                                case _:
+                                    print('Invalid command')
+                                    raise exeptions.IncorectArgument
+                except ValueError| IndexError:
                     print('Invalid arguments')
                     continue
+                except exeptions.IncorectArgument:
+                    continue
 
-                ans = f'Added monster {name} to ({x}, {y}) saying {hello}'
+                ans = f'Added monster {tmp["name"]} to {tmp["coords"]} saying {tmp["hello"]}'
                 try:
-                    game.addmon((x, y), name, hello)
+                    game.addmon(tmp['coords'], tmp["name"], tmp['hello'])
                 except exeptions.UnknownMonster:
                     print('Cannot add unknown monster')
                     continue
