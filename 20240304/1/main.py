@@ -24,35 +24,43 @@ def main():
                     continue
                 try:
                     while i < len(other):
-                            match other[i]:
-                                case 'hello':
-                                    hello = list()
-                                    i += 1
-                                    while i < len(other):
-                                        if other[i] not in ['hello', 'hp', 'coords']:
-                                            hello.append(other[i])
-                                            i += 1
-                                        else:
-                                            break
-                                    tmp['hello'] = ' '.join(hello)[1:-1]
-                                case 'hp':
-                                    tmp['hp'] = int(other[i+1])
-                                    i += 2
-                                case 'coords':
-                                    tmp['coords'] = (int(other[i+1]), int(other[i+2]))
-                                    i += 3
-                                case _:
-                                    print('Invalid command')
-                                    raise exeptions.IncorectArgument
-                except ValueError| IndexError:
+                        match other[i]:
+                            case 'hello':
+                                hello = list()
+                                i += 1
+                                while i < len(other):
+                                    if other[i] not in ['hello', 'hp', 'coords']:
+                                        hello.append(other[i])
+                                        i += 1
+                                    else:
+                                        break
+                                tmp['hello'] = ' '.join(hello)[1:-1]
+                            case 'hp':
+                                tmp['hp'] = int(other[i+1])
+                                i += 2
+                            case 'coords':
+                                tmp['coords'] = (
+                                    int(other[i+1]), int(other[i+2])
+                                    )
+                                i += 3
+                            case _:
+                                print('Invalid command')
+                                raise exeptions.IncorectArgument
+                except ValueError | IndexError:
                     print('Invalid arguments')
                     continue
                 except exeptions.IncorectArgument:
                     continue
 
-                ans = f'Added monster {tmp["name"]} to {tmp["coords"]} saying {tmp["hello"]}'
+                ans = (
+                    f'Added monster {tmp["name"]} to'
+                    f'{tmp["coords"]} saying {tmp["hello"]}'
+                )
                 try:
-                    game.addmon(tmp['coords'], tmp["name"], tmp['hello'], tmp['hp'])
+                    game.addmon(
+                        tmp['coords'], tmp["name"],
+                        tmp['hello'], tmp['hp']
+                    )
                 except exeptions.UnknownMonster:
                     print('Cannot add unknown monster')
                     continue

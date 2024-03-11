@@ -32,13 +32,11 @@ class Game:
         self.map = map
         self.player = player
 
-    def addmon(
-            self,
-            position: tuple[int, int],
-            name: str,
-            hellow: str,
-            hp: int
-        ):
+    def addmon(self,
+               position: tuple[int, int],
+               name: str,
+               hellow: str,
+               hp: int):
         try:
             monster = Monster(name, hellow, hp)
             self.map.set_evant(position, monster)

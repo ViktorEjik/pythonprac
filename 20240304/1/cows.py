@@ -1,5 +1,5 @@
 cow_dict = {
-    'jgsbat':'''
+    'jgsbat' : '''
 $the_cow = <<EOC;
          $thoughts
           $thoughts

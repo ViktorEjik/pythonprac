@@ -1,7 +1,8 @@
 from io import StringIO
+
 from cowsay import cowsay, list_cows, read_dot_cow
 
-import cows 
+import cows
 import exeptions
 
 MAP_LENGTH = 10
