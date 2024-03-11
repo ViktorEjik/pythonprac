@@ -1,5 +1,7 @@
-from cowsay import cowsay, list_cows
+from io import StringIO
+from cowsay import cowsay, list_cows, read_dot_cow
 
+import cows 
 import exeptions
 
 MAP_LENGTH = 10
@@ -34,10 +36,14 @@ class Player:
 class Monster:
     def __init__(self, name: str, hellow: str, hp: int) -> None:
         self.hellow = hellow
-        if name not in list_cows():
+        if (name not in list_cows()) and (name not in cows.cow_dict):
             raise exeptions.UnknownMonster
         self.name = name
         self.hp = hp
 
     def boo(self):
-        return cowsay(message=self.hellow, cow=self.name)
+        try:
+            return cowsay(message=self.hellow, cow=self.name)
+        except Exception:
+            cow = read_dot_cow(StringIO(cows.cow_dict[self.name]))
+            return cowsay(message=self.hellow, cowfile=cow)
