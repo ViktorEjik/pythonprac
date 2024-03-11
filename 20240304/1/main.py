@@ -34,7 +34,6 @@ def main():
                                             i += 1
                                         else:
                                             break
-                                    print(i)
                                     tmp['hello'] = ' '.join(hello)[1:-1]
                                 case 'hp':
                                     tmp['hp'] = int(other[i+1])
@@ -53,7 +52,7 @@ def main():
 
                 ans = f'Added monster {tmp["name"]} to {tmp["coords"]} saying {tmp["hello"]}'
                 try:
-                    game.addmon(tmp['coords'], tmp["name"], tmp['hello'])
+                    game.addmon(tmp['coords'], tmp["name"], tmp['hello'], tmp['hp'])
                 except exeptions.UnknownMonster:
                     print('Cannot add unknown monster')
                     continue

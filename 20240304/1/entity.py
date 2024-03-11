@@ -21,10 +21,10 @@ class Player:
         return self._position
 
     @position.setter
-    def position(self, pos):
+    def position(self, pos: tuple[int, int]):
         self._position = pos
 
-    def move(self, orientation):
+    def move(self, orientation: str):
         self.position = (
             (self.position[0] + self.orient[orientation][0]) % MAP_LENGTH,
             (self.position[1] + self.orient[orientation][1]) % MAP_LENGTH
@@ -32,11 +32,12 @@ class Player:
 
 
 class Monster:
-    def __init__(self, name, hellow) -> None:
+    def __init__(self, name: str, hellow: str, hp: int) -> None:
         self.hellow = hellow
         if name not in list_cows():
             raise exeptions.UnknownMonster
         self.name = name
+        self.hp = hp
 
     def boo(self):
         return cowsay(message=self.hellow, cow=self.name)
