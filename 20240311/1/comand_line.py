@@ -101,10 +101,17 @@ class CMD_Game(cmd.Cmd):
             return
         print(ans)
         
-    def do_attack(self, *args):
+    def do_attack(self, args):
         res = 'Attacked {name}, damage {dmg} hp'
+        args = shlex.split(args)
+        if args and (args[0] != 'with' or len(args) != 2):
+            print('Invalid arguments')
+            return
         try:
-            dmg = self.game.attack()
+            if args:
+                dmg = self.game.attack(args[1])
+            else:
+                dmg = self.game.attack()
         except exeptions.MonsterRIP as err:
             print(res.format(name=err.name, dmg=err.dmg))
             print(f'{err.name} died')
@@ -112,8 +119,14 @@ class CMD_Game(cmd.Cmd):
         except exeptions.NOMonster:
             print('No monster here')
             return
+        except exeptions.NOWepon:
+            print('Unknown weapon')
+            return
         print(res.format(name=dmg[1], dmg=dmg[0]))
         print(f'{dmg[1]} now has {dmg[2]}')
+
+    def complete_attack(self, text, line, begidx, endidx):
+        return [c for c in self.game.player.inventory.keys() if c.startswith(text)]
 
     def do_EOF(self, args):
         return True
