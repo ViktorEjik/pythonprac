@@ -1,5 +1,5 @@
+import abc
 from io import StringIO
-import abc 
 
 from cowsay import cowsay, list_cows, read_dot_cow
 
@@ -38,12 +38,12 @@ class Player:
         'axe': Axe(),
         'spear': Spear()
     }
-    
+
     def __init__(self) -> None:
         self._position = (0, 0)
 
     @property
-    def position(self):
+    def position(self) -> tuple[int, int]:
         return self._position
 
     @position.setter
@@ -55,8 +55,8 @@ class Player:
             (self.position[0] + self.orient[orientation][0]) % MAP_LENGTH,
             (self.position[1] + self.orient[orientation][1]) % MAP_LENGTH
         )
-    
-    def attack_with(self, weapon):
+
+    def attack_with(self, weapon: str) -> Wepon:
         if weapon in self.inventory:
             return self.inventory.get(weapon)
         raise exeptions.NOWepon
@@ -72,15 +72,15 @@ class Monster:
 
     def __bool__(self):
         return self.hp > 0
-    
-    def boo(self):
+
+    def boo(self) -> str:
         try:
             return cowsay(message=self.hellow, cow=self.name)
         except Exception:
             cow = read_dot_cow(StringIO(cows.cow_dict[self.name]))
             return cowsay(message=self.hellow, cowfile=cow)
-    
-    def healing(self, hp):
+
+    def healing(self, hp: int) -> int:
         if hp <= self.hp:
             self.hp -= hp
             return hp

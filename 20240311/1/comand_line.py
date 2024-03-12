@@ -5,27 +5,28 @@ import exeptions
 from entity import Player
 from logic import Game, Map
 
+
 class CMD_Game(cmd.Cmd):
-    
+
     def __init__(self,
                  completekey: str = "tab",
-                 stdin = None,
-                 stdout = None,
+                 stdin=None,
+                 stdout=None,
                  game: Game | None = None) -> None:
         # Создание новой игры
         if not game:
             game = Game(Map(), Player())
         self.game = game
         super().__init__(completekey, stdin, stdout)
-    
+
     prompt = 'MUD-> '
 
     @staticmethod
-    def print_pos(res):
+    def print_pos(res: tuple[tuple[int, int], str | None]):
         print(f'Moved to ({res[0][0]}, {res[0][1]})')
         if res[1]:
             print(res[1])
-    
+
     def do_left(self, args):
         if args:
             print('Invalid command')
@@ -37,7 +38,7 @@ class CMD_Game(cmd.Cmd):
             print('Invalid command')
         res = self.game.go_to('right')
         self.print_pos(res)
-    
+
     def do_up(self, args):
         if args:
             print('Invalid command')
@@ -49,7 +50,7 @@ class CMD_Game(cmd.Cmd):
             print('Invalid command')
         res = self.game.go_to('down')
         self.print_pos(res)
-    
+
     def do_addmon(self, args):
         try:
             args = shlex.split(args)
@@ -101,11 +102,9 @@ class CMD_Game(cmd.Cmd):
             return
         print(ans)
 
-    
     def complete_addmon(self, text, line, begidx, endidx):
         if all(x not in line for x in ['hello', 'hp', 'coords']):
             return [c for c in self.game.name_of_monster if c.startswith(text)]
-
 
     def do_attack(self, args):
         res = 'Attacked {name}, damage {dmg} hp'
@@ -137,18 +136,20 @@ class CMD_Game(cmd.Cmd):
             print('Unknown weapon')
             return
 
-
         print(res.format(name=dmg[1], dmg=dmg[0]))
         print(f'{dmg[1]} now has {dmg[2]}')
 
     def complete_attack(self, text, line, begidx, endidx):
         if 'with' in line:
-            return [c for c in self.game.player.inventory.keys() if c.startswith(text)]
+            return [
+                c for c
+                in self.game.player.inventory.keys()
+                if c.startswith(text)
+            ]
         return [c for c in self.game.name_of_monster if c.startswith(text)]
-
 
     def do_EOF(self, args):
         return True
-    
+
     def emptyline(self) -> bool:
         pass

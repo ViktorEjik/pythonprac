@@ -1,7 +1,8 @@
+from cowsay import list_cows
+
+import cows
 import exeptions
 from entity import Monster, Player
-from cowsay import list_cows
-import cows
 
 MAP_LENGTH = 10
 
@@ -19,17 +20,18 @@ class Map:
         if flag:
             raise exeptions.ReplaseMonster
 
-    def get_evant(self, position: tuple[int, int]):
+    def get_evant(self, position: tuple[int, int]) -> Monster:
         x, y = position
         return self.map[x][y]
 
-    def is_evant(self, position: tuple[int, int]):
+    def is_evant(self, position: tuple[int, int]) -> bool:
         x, y = position
         return self.map[x][y] is not None
 
 
 class Game:
-    name_of_monster = list_cows() + list(cows.cow_dict)
+    name_of_monster: list[str] = list_cows() + list(cows.cow_dict)
+
     def __init__(self, map: Map, player: Player) -> None:
         self.map = map
         self.player = player
@@ -49,8 +51,7 @@ class Game:
         except Exception:
             raise exeptions.IncorectArgument
 
-
-    def attack(self, name, weapon='sword'):
+    def attack(self, name: str, weapon='sword') -> tuple[int, str, int]:
         play_pos = self.player.position
         monster = self.map.get_evant(play_pos)
         if not monster:
@@ -58,19 +59,20 @@ class Game:
 
         if name != monster.name:
             raise exeptions.NONamedMonster
-        weapon=self.player.attack_with(weapon)
+        weapon = self.player.attack_with(weapon)
         dmg = monster.healing(weapon.damage)
 
         if monster.hp == 0:
             self.map.set_evant(play_pos, None)
             raise exeptions.MonsterRIP(dmg=dmg, name=monster.name)
         return dmg, monster.name, monster.hp
-        
-    
-    def go_to(self, orientation: str):
+
+    def go_to(self, orientation: str) -> tuple[tuple[int, int], str | None]:
         self.player.move(orientation)
         pos = self.player.position
-        res = [pos, None]
+        res = (pos,)
         if self.map.is_evant(pos):
-            res[1] = self.map.get_evant(pos).boo()
+            res += (self.map.get_evant(pos).boo(), )
+        else:
+            res += (None, )
         return res
