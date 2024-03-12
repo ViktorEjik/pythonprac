@@ -48,3 +48,12 @@ class Monster:
         except Exception:
             cow = read_dot_cow(StringIO(cows.cow_dict[self.name]))
             return cowsay(message=self.hellow, cowfile=cow)
+    
+    def healing(self, hp):
+        if hp <= self.hp:
+            self.hp -= hp
+            return hp
+        old = self.hp
+        self.hp = 0
+        return old
+            

@@ -10,7 +10,7 @@ class Map:
             [None for _ in range(MAP_LENGTH)] for _ in range(MAP_LENGTH)
         ]
 
-    def set_evant(self, position: tuple[int, int], evant):
+    def set_evant(self, position: tuple[int, int], evant: Monster | None):
         x, y = position
         flag = self.map[x][y] is not None
         self.map[x][y] = evant
@@ -47,6 +47,21 @@ class Game:
         except Exception:
             raise exeptions.IncorectArgument
 
+    def attack(self):
+        play_pos = self.player.position
+        monster = self.map.get_evant(play_pos)
+        if not monster:
+            raise exeptions.NOMonster
+        dmg = monster.healing(10)
+        if monster.hp == 0:
+            try:
+                self.map.set_evant(play_pos, None)
+            except Exception:
+                pass
+            raise exeptions.MonsterRIP(dmg=dmg, name=monster.name)
+        return dmg, monster.name, monster.hp
+        
+    
     def go_to(self, orientation: str):
         self.player.move(orientation)
         pos = self.player.position

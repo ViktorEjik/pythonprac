@@ -1,11 +1,21 @@
+class MonsterRIP(Exception):
+    def __init__(self, dmg: int, name: str, *args: object) -> None:
+        super().__init__(*args)
+        self.dmg = dmg
+        self.name = name
 
-class ReplaseMonster(BaseException):
+
+class NOMonster(Exception):
     pass
 
 
-class IncorectArgument(BaseException):
+class ReplaseMonster(Exception):
     pass
 
 
-class UnknownMonster(BaseException):
+class IncorectArgument(Exception):
+    pass
+
+
+class UnknownMonster(Exception):
     pass

@@ -51,8 +51,6 @@ class CMD_Game(cmd.Cmd):
         self.print_pos(res)
     
     def do_addmon(self, args):
-        # addmon dragon hp 999 coords 6 9 hello "Who goes there?"
-
         try:
             args = shlex.split(args)
             args.insert(0, 'name')
@@ -103,6 +101,19 @@ class CMD_Game(cmd.Cmd):
             return
         print(ans)
         
+    def do_attack(self, *args):
+        res = 'Attacked {name}, damage {dmg} hp'
+        try:
+            dmg = self.game.attack()
+        except exeptions.MonsterRIP as err:
+            print(res.format(name=err.name, dmg=err.dmg))
+            print(f'{err.name} died')
+            return
+        except exeptions.NOMonster:
+            print('No monster here')
+            return
+        print(res.format(name=dmg[1], dmg=dmg[0]))
+        print(f'{dmg[1]} now has {dmg[2]}')
 
     def do_EOF(self, args):
         return True
