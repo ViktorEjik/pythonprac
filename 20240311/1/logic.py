@@ -1,5 +1,7 @@
 import exeptions
 from entity import Monster, Player
+from cowsay import list_cows
+import cows
 
 MAP_LENGTH = 10
 
@@ -27,7 +29,7 @@ class Map:
 
 
 class Game:
-
+    name_of_monster = list_cows() + list(cows.cow_dict)
     def __init__(self, map: Map, player: Player) -> None:
         self.map = map
         self.player = player
@@ -47,11 +49,13 @@ class Game:
         except Exception:
             raise exeptions.IncorectArgument
 
-    def attack(self):
+    def attack(self, name):
         play_pos = self.player.position
         monster = self.map.get_evant(play_pos)
         if not monster:
             raise exeptions.NOMonster
+        if name != monster.name:
+            raise exeptions.NONamedMonster
         dmg = monster.healing(10)
         if monster.hp == 0:
             try:

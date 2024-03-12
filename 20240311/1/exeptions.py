@@ -8,6 +8,8 @@ class MonsterRIP(Exception):
 class NOMonster(Exception):
     pass
 
+class NONamedMonster(Exception):
+    pass
 
 class ReplaseMonster(Exception):
     pass

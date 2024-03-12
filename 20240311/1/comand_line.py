@@ -100,11 +100,19 @@ class CMD_Game(cmd.Cmd):
             print('Invalid arguments')
             return
         print(ans)
-        
-    def do_attack(self, *args):
+    
+    def complete_addmon(self, text, line, begidx, endidx):
+        if all(x not in line for x in ['hello', 'hp', 'coords']):
+            return [c for c in self.game.name_of_monster if c.startswith(text)]
+    
+    def do_attack(self, args):
         res = 'Attacked {name}, damage {dmg} hp'
+        args = shlex.split(args)
+        if not args:
+            print('Invalid arguments')
+            return
         try:
-            dmg = self.game.attack()
+            dmg = self.game.attack(name=args[0])
         except exeptions.MonsterRIP as err:
             print(res.format(name=err.name, dmg=err.dmg))
             print(f'{err.name} died')
@@ -112,9 +120,15 @@ class CMD_Game(cmd.Cmd):
         except exeptions.NOMonster:
             print('No monster here')
             return
+        except exeptions.NONamedMonster:
+            print(f'No {args[0]} here')
+            return
         print(res.format(name=dmg[1], dmg=dmg[0]))
         print(f'{dmg[1]} now has {dmg[2]}')
 
+    def complete_attack(self, text, line, begidx, endidx):
+        return [c for c in self.game.name_of_monster if c.startswith(text)]
+    
     def do_EOF(self, args):
         return True
     
