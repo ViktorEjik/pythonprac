@@ -131,7 +131,7 @@ class CMD_Game(cmd.Cmd):
             print('No monster here')
             return
         except exeptions.NONamedMonster:
-            print(f'No {args[0]} here')
+            print(f'No {name} here')
             return
         except exeptions.NOWepon:
             print('Unknown weapon')
