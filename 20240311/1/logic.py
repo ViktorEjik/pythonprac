@@ -14,7 +14,7 @@ class Map:
 
     def set_evant(self, position: tuple[int, int], evant: Monster | None):
         x, y = position
-        flag = self.map[x][y] is not None
+        flag = bool(self.map[x][y])
         self.map[x][y] = evant
         if flag:
             raise exeptions.ReplaseMonster
@@ -49,19 +49,20 @@ class Game:
         except Exception:
             raise exeptions.IncorectArgument
 
-    def attack(self, name):
+
+    def attack(self, name, weapon='sword'):
         play_pos = self.player.position
         monster = self.map.get_evant(play_pos)
         if not monster:
             raise exeptions.NOMonster
+
         if name != monster.name:
             raise exeptions.NONamedMonster
-        dmg = monster.healing(10)
+        weapon=self.player.attack_with(weapon)
+        dmg = monster.healing(weapon.damage)
+
         if monster.hp == 0:
-            try:
-                self.map.set_evant(play_pos, None)
-            except Exception:
-                pass
+            self.map.set_evant(play_pos, None)
             raise exeptions.MonsterRIP(dmg=dmg, name=monster.name)
         return dmg, monster.name, monster.hp
         

@@ -5,6 +5,10 @@ class MonsterRIP(Exception):
         self.name = name
 
 
+class NOWepon(Exception):
+    pass
+
+
 class NOMonster(Exception):
     pass
 

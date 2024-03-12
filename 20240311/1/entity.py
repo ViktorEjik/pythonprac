@@ -1,4 +1,5 @@
 from io import StringIO
+import abc 
 
 from cowsay import cowsay, list_cows, read_dot_cow
 
@@ -6,6 +7,22 @@ import cows
 import exeptions
 
 MAP_LENGTH = 10
+
+
+class Wepon(abc.ABC):
+    damage: int
+
+
+class Sword(Wepon):
+    damage = 10
+
+
+class Spear(Wepon):
+    damage = 15
+
+
+class Axe(Wepon):
+    damage = 20
 
 
 class Player:
@@ -16,6 +33,12 @@ class Player:
         'down': (0, 1)
     }
 
+    inventory = {
+        'sword': Sword(),
+        'axe': Axe(),
+        'spear': Spear()
+    }
+    
     def __init__(self) -> None:
         self._position = (0, 0)
 
@@ -32,6 +55,11 @@ class Player:
             (self.position[0] + self.orient[orientation][0]) % MAP_LENGTH,
             (self.position[1] + self.orient[orientation][1]) % MAP_LENGTH
         )
+    
+    def attack_with(self, weapon):
+        if weapon in self.inventory:
+            return self.inventory.get(weapon)
+        raise exeptions.NOWepon
 
 
 class Monster:
@@ -42,6 +70,9 @@ class Monster:
         self.name = name
         self.hp = hp
 
+    def __bool__(self):
+        return self.hp > 0
+    
     def boo(self):
         try:
             return cowsay(message=self.hellow, cow=self.name)
@@ -56,4 +87,3 @@ class Monster:
         old = self.hp
         self.hp = 0
         return old
-            
