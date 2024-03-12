@@ -1,10 +1,11 @@
-class ReplaseMonster(Exception):
+
+class ReplaseMonster(BaseException):
     pass
 
 
-class IncorectArgument(Exception):
+class IncorectArgument(BaseException):
     pass
 
 
-class UnknownMonster(Exception):
+class UnknownMonster(BaseException):
     pass
