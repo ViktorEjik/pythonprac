@@ -5,10 +5,10 @@ name = "pypi"
 
 [packages]
 python-cowsay = "*"
+
+[dev-packages]
 flake8 = "*"
 isort = "*"
 
-[dev-packages]
-
 [requires]
-python_version = "3.11"
+python_version = "3.12"
