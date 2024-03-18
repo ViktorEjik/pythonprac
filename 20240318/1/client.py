@@ -1,15 +1,9 @@
 import cmd
 import shlex
 import socket
-import readline
 
 import exeptions
 from entity import Print_Monster
-
-
-def msg_sendreciever(client, socket):
-    while response := socket.recv(1024).rstrip().decode():
-        print(f"\n{response}\n{client.prompt}{readline.get_line_buffer()}", end="", flush=True)
 
 
 class CMD_Game(cmd.Cmd):
@@ -38,14 +32,12 @@ class CMD_Game(cmd.Cmd):
         if len(response) > 1:
             name, hellow = shlex.split(response[1])
             print(Print_Monster(name, hellow))
-        
 
     def do_left(self, args):
         if args:
             print('Invalid command')
             return
         self.print_pos('left')
-        
 
     def do_right(self, args):
         if args:
@@ -75,7 +67,7 @@ class CMD_Game(cmd.Cmd):
                 raise exeptions.IncorectArgument
             while i < len(args):
                 match args[i]:
-                    case 'name' | 'hello'| 'hp':
+                    case 'name' | 'hello' | 'hp':
                         monster[args[i]] = args[i+1]
                         i += 2
                     case 'coords':
@@ -92,19 +84,28 @@ class CMD_Game(cmd.Cmd):
         except IndexError:
             print('Invalid arguments')
             return
-        monster['hello'] =  '"' + monster['hello'] + '"'
+        monster['hello'] = '"' + monster['hello'] + '"'
         self.socket.sendall(
-            f"addmon {monster['name']} {monster['coords'][0]} {monster['coords'][1]} {monster['hello']} {monster['hp']}\n".encode())
-        
+            (
+                f"addmon {monster['name']} {monster['coords'][0]} "
+                f"{monster['coords'][1]} {monster['hello']} "
+                f"{monster['hp']}\n"
+            ).encode()
+        )
+
         response = self.socket.recv(1024).rstrip().decode()
-        
+
         if response == '0':
-            print(f'Added monster {monster["name"]} to '
-            f'{monster["coords"]} saying {monster["hello"]}') 
+            print(
+                f'Added monster {monster["name"]} to '
+                f'{monster["coords"]} saying {monster["hello"]}'
+            )
         elif response == '1':
-            print(f'Added monster {monster["name"]} to'
-            f'{monster["coords"]} saying {monster["hello"]}'
-            '\nReplaced the old monster')
+            print(
+                f'Added monster {monster["name"]} to'
+                f'{monster["coords"]} saying {monster["hello"]}'
+                '\nReplaced the old monster'
+            )
         elif response == '2':
             print('Cannot add unknown monster')
 
@@ -114,21 +115,22 @@ class CMD_Game(cmd.Cmd):
 
     def do_attack(self, args):
         res = 'Attacked {name}, damage {dmg} hp'
-        
+
         args = shlex.split(args)
         if not args or len(args) not in [1, 3]:
             print('Invalid arguments')
             return
-        
+
         name, args = args[0], args[1:]
         if args and (args[0] != 'with' or len(args) != 2):
             print('Invalid arguments')
             return
-        
-        
-        self.socket.sendall(f'attack {name} { args[1] if args else "sword"}\n'.encode())
+
+        self.socket.sendall(
+            f'attack {name} { args[1] if args else "sword"}\n'.encode()
+        )
         state, *dmg = shlex.split(self.socket.recv(1024).rstrip().decode())
-        
+
         if state == '0':
             print(res.format(name=name, dmg=dmg[0]))
             print(f'{name} now has {dmg[1]}')
@@ -150,7 +152,7 @@ class CMD_Game(cmd.Cmd):
                 if c.startswith(text)
             ]
         return [c for c in self.game.name_of_monster if c.startswith(text)]
-    
+
     def do_EOF(self, args):
         return True
 
@@ -163,8 +165,4 @@ if __name__ == '__main__':
     port = 1337
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((host, port))
-        # s.sendall(f'register {sys.argv[1]}\n'.encode())
-        # response = s.recv(1024).rstrip().decode()
-            # print(response[2:])
         cli = CMD_Game(s).cmdloop()
-

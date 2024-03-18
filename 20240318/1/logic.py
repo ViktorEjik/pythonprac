@@ -63,17 +63,22 @@ class Game:
         weapon = self.player.attack_with(weapon)
         dmg = monster.healing(weapon.damage)
 
-        if  not monster:
+        if not monster:
             self.map.set_evant(play_pos, None)
             raise exeptions.MonsterRIP(dmg=dmg, name=monster.name)
         return dmg, monster.name, monster.hp
 
-    def go_to(self, orientation: str) -> tuple[tuple[int, int], str| None, str | None]:
+    def go_to(
+        self,
+        orientation: str
+    ) -> tuple[tuple[int, int], str | None, str | None]:
+
         self.player.move(orientation)
         pos = self.player.position
         res = (pos,)
         if self.map.is_evant(pos):
-            res += ((self.map.get_evant(pos).name, self.map.get_evant(pos).hellow))
+            res += (
+                (self.map.get_evant(pos).name, self.map.get_evant(pos).hellow))
         else:
             res += (None, None)
         return res

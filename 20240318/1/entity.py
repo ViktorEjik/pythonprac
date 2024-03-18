@@ -68,7 +68,7 @@ class Print_Monster:
         if (name not in list_cows()) and (name not in cows.cow_dict):
             raise exeptions.UnknownMonster
         self.name = name
-    
+
     def __str__(self) -> str:
         try:
             return cowsay(message=self.hellow, cow=self.name)
