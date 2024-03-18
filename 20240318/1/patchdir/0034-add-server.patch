@@ -1,0 +1,95 @@
+From 2e406e41974ff891976f822a385558de7a8fe5a7 Mon Sep 17 00:00:00 2001
+From: Viktor Mogilenets <mogilinez17@yandex.ru>
+Date: Tue, 19 Mar 2024 01:05:44 +0300
+Subject: [PATCH 34/36] add server
+
+---
+ 20240318/1/server.py | 75 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
+ create mode 100644 20240318/1/server.py
+
+diff --git a/20240318/1/server.py b/20240318/1/server.py
+new file mode 100644
+index 0000000..646c172
+--- /dev/null
++++ b/20240318/1/server.py
+@@ -0,0 +1,75 @@
++import asyncio
++import shlex
++
++from logic import Game, Map, Player
++import exeptions
++
++class Server:
++    def __init__(self) -> None:
++        self.game = Game(Map(), Player())
++    
++    async def _client(self, reader, writer):
++        while data := await reader.readline():
++            comand = shlex.split(data.decode())
++            match comand:
++                case ['cows']:
++                    writer.write(str(self.game.name_of_monster).encode())
++                
++                case ['invent']:
++                    writer.write(str(list(self.game.player.inventory.keys())).encode())
++
++                case ['left' | 'right' | 'up' | 'down']:
++                    res = self.game.go_to(comand[0])
++                    ans = f'{res[0][0]}, {res[0][1]}'
++                    if res[1]:
++                        ans += '\\' + res[1] + ' ' + '"' + res[2] + '"'
++                    writer.write((ans+'\n').encode())
++
++                case ['addmon', *args]:
++                    ans = '0'
++
++                    try:
++                        self.game.addmon(
++                            (int(args[1]), int(args[2])), args[0],
++                            args[3], int(args[4])
++                        )
++                    except exeptions.UnknownMonster:
++                        ans = '2'
++                    except exeptions.ReplaseMonster:
++                        ans = '1'
++                    writer.write(ans.encode())
++                
++                case ['attack', *args]:
++                    name, weapon = args[0], args[1]
++                    try:
++                        dmg = self.game.attack(name=name, weapon=weapon)
++
++                    except exeptions.MonsterRIP as err:
++                        writer.write(
++                            f'1 {err.dmg}'.encode())
++                        continue
++                    except exeptions.NOMonster:
++                        writer.write('2'.encode())
++                        continue
++                    except exeptions.NONamedMonster:
++                        writer.write(f'3'.encode())
++                        continue
++                    except exeptions.NOWepon:
++                        writer.write('4'.encode())
++                        continue
++
++                    writer.write(f'0 {dmg[0]} {dmg[2]}'.encode())
++            
++            
++        writer.close()
++        await writer.wait_closed()
++
++    def new_client(self):
++        return self._client
++
++async def main():
++    server = await asyncio.start_server(Server().new_client(), '0.0.0.0', 1337)
++    async with server:
++        await server.serve_forever()
++
++asyncio.run(main())
+\ No newline at end of file
+-- 
+2.44.0
+

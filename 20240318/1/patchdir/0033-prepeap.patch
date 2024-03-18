@@ -1,0 +1,265 @@
+From eb5bb6caad04b954c08900a7f0fdae45b1663791 Mon Sep 17 00:00:00 2001
+From: Viktor Mogilenets <mogilinez17@yandex.ru>
+Date: Tue, 19 Mar 2024 01:04:20 +0300
+Subject: [PATCH 33/36] prepeap
+
+---
+ 20240318/1/comand_line.py | 155 --------------------------------------
+ 20240318/1/entity.py      |  21 ++++--
+ 20240318/1/logic.py       |   9 ++-
+ 20240318/1/main.py        |   9 ---
+ 4 files changed, 18 insertions(+), 176 deletions(-)
+ delete mode 100644 20240318/1/comand_line.py
+ delete mode 100644 20240318/1/main.py
+
+diff --git a/20240318/1/comand_line.py b/20240318/1/comand_line.py
+deleted file mode 100644
+index 798e5a8..0000000
+--- a/20240318/1/comand_line.py
++++ /dev/null
+@@ -1,155 +0,0 @@
+-import cmd
+-import shlex
+-
+-import exeptions
+-from entity import Player
+-from logic import Game, Map
+-
+-
+-class CMD_Game(cmd.Cmd):
+-
+-    def __init__(self,
+-                 completekey: str = "tab",
+-                 stdin=None,
+-                 stdout=None,
+-                 game: Game | None = None) -> None:
+-        # Создание новой игры
+-        if not game:
+-            game = Game(Map(), Player())
+-        self.game = game
+-        super().__init__(completekey, stdin, stdout)
+-
+-    prompt = 'MUD-> '
+-
+-    @staticmethod
+-    def print_pos(res: tuple[tuple[int, int], str | None]):
+-        print(f'Moved to ({res[0][0]}, {res[0][1]})')
+-        if res[1]:
+-            print(res[1])
+-
+-    def do_left(self, args):
+-        if args:
+-            print('Invalid command')
+-        res = self.game.go_to('left')
+-        self.print_pos(res)
+-
+-    def do_right(self, args):
+-        if args:
+-            print('Invalid command')
+-        res = self.game.go_to('right')
+-        self.print_pos(res)
+-
+-    def do_up(self, args):
+-        if args:
+-            print('Invalid command')
+-        res = self.game.go_to('up')
+-        self.print_pos(res)
+-
+-    def do_down(self, args):
+-        if args:
+-            print('Invalid command')
+-        res = self.game.go_to('down')
+-        self.print_pos(res)
+-
+-    def do_addmon(self, args):
+-        try:
+-            args = shlex.split(args)
+-            args.insert(0, 'name')
+-            monster = dict()
+-            i = 0
+-            if any(x not in args for x in ['hello', 'hp', 'coords']):
+-                raise exeptions.IncorectArgument
+-            while i < len(args):
+-                match args[i]:
+-                    case 'name' | 'hello':
+-                        monster[args[i]] = args[i+1]
+-                        i += 2
+-                    case 'hp':
+-                        monster[args[i]] = int(args[i+1])
+-                        i += 2
+-                    case 'coords':
+-                        monster[args[i]] = int(args[i+1]), int(args[i+2])
+-                        i += 3
+-                    case _:
+-                        raise exeptions.IncorectArgument
+-        except exeptions.IncorectArgument:
+-            print('Invalid command')
+-            return
+-        except ValueError:
+-            print('Invalid arguments')
+-            return
+-        except IndexError:
+-            print('Invalid arguments')
+-            return
+-
+-        ans = (
+-            f'Added monster {monster["name"]} to'
+-            f'{monster["coords"]} saying {monster["hello"]}'
+-        )
+-
+-        try:
+-            self.game.addmon(
+-                monster['coords'], monster["name"],
+-                monster['hello'], monster['hp']
+-            )
+-        except exeptions.UnknownMonster:
+-            print('Cannot add unknown monster')
+-            return
+-        except exeptions.ReplaseMonster:
+-            ans += '\nReplaced the old monster'
+-        except exeptions.IncorectArgument:
+-            print('Invalid arguments')
+-            return
+-        print(ans)
+-
+-    def complete_addmon(self, text, line, begidx, endidx):
+-        if all(x not in line for x in ['hello', 'hp', 'coords']):
+-            return [c for c in self.game.name_of_monster if c.startswith(text)]
+-
+-    def do_attack(self, args):
+-        res = 'Attacked {name}, damage {dmg} hp'
+-        args = shlex.split(args)
+-        if not args or len(args) not in [1, 3]:
+-            print('Invalid arguments')
+-            return
+-        name, args = args[0], args[1:]
+-        if args and (args[0] != 'with' or len(args) != 2):
+-            print('Invalid arguments')
+-            return
+-        try:
+-            if args:
+-                dmg = self.game.attack(name=name, weapon=args[1])
+-            else:
+-                dmg = self.game.attack(name=name)
+-
+-        except exeptions.MonsterRIP as err:
+-            print(res.format(name=err.name, dmg=err.dmg))
+-            print(f'{err.name} died')
+-            return
+-        except exeptions.NOMonster:
+-            print('No monster here')
+-            return
+-        except exeptions.NONamedMonster:
+-            print(f'No {name} here')
+-            return
+-        except exeptions.NOWepon:
+-            print('Unknown weapon')
+-            return
+-
+-        print(res.format(name=dmg[1], dmg=dmg[0]))
+-        print(f'{dmg[1]} now has {dmg[2]}')
+-
+-    def complete_attack(self, text, line, begidx, endidx):
+-        if 'with' in line:
+-            return [
+-                c for c
+-                in self.game.player.inventory.keys()
+-                if c.startswith(text)
+-            ]
+-        return [c for c in self.game.name_of_monster if c.startswith(text)]
+-
+-    def do_EOF(self, args):
+-        return True
+-
+-    def emptyline(self) -> bool:
+-        pass
+diff --git a/20240318/1/entity.py b/20240318/1/entity.py
+index 89142db..d8d3e44 100644
+--- a/20240318/1/entity.py
++++ b/20240318/1/entity.py
+@@ -62,24 +62,29 @@ class Player:
+         raise exeptions.NOWepon
+ 
+ 
+-class Monster:
+-    def __init__(self, name: str, hellow: str, hp: int) -> None:
++class Print_Monster:
++    def __init__(self, name: str, hellow: str) -> None:
+         self.hellow = hellow
+         if (name not in list_cows()) and (name not in cows.cow_dict):
+             raise exeptions.UnknownMonster
+         self.name = name
+-        self.hp = hp
+-
+-    def __bool__(self):
+-        return self.hp > 0
+-
+-    def boo(self) -> str:
++    
++    def __str__(self) -> str:
+         try:
+             return cowsay(message=self.hellow, cow=self.name)
+         except Exception:
+             cow = read_dot_cow(StringIO(cows.cow_dict[self.name]))
+             return cowsay(message=self.hellow, cowfile=cow)
+ 
++
++class Monster(Print_Monster):
++    def __init__(self, name: str, hellow: str, hp: int) -> None:
++        super().__init__(name, hellow)
++        self.hp = hp
++
++    def __bool__(self):
++        return self.hp > 0
++
+     def healing(self, hp: int) -> int:
+         if hp <= self.hp:
+             self.hp -= hp
+diff --git a/20240318/1/logic.py b/20240318/1/logic.py
+index 9a6bd58..c3c83e5 100644
+--- a/20240318/1/logic.py
++++ b/20240318/1/logic.py
+@@ -59,20 +59,21 @@ class Game:
+ 
+         if name != monster.name:
+             raise exeptions.NONamedMonster
++
+         weapon = self.player.attack_with(weapon)
+         dmg = monster.healing(weapon.damage)
+ 
+-        if monster.hp == 0:
++        if  not monster:
+             self.map.set_evant(play_pos, None)
+             raise exeptions.MonsterRIP(dmg=dmg, name=monster.name)
+         return dmg, monster.name, monster.hp
+ 
+-    def go_to(self, orientation: str) -> tuple[tuple[int, int], str | None]:
++    def go_to(self, orientation: str) -> tuple[tuple[int, int], str| None, str | None]:
+         self.player.move(orientation)
+         pos = self.player.position
+         res = (pos,)
+         if self.map.is_evant(pos):
+-            res += (self.map.get_evant(pos).boo(), )
++            res += ((self.map.get_evant(pos).name, self.map.get_evant(pos).hellow))
+         else:
+-            res += (None, )
++            res += (None, None)
+         return res
+diff --git a/20240318/1/main.py b/20240318/1/main.py
+deleted file mode 100644
+index d58d1fd..0000000
+--- a/20240318/1/main.py
++++ /dev/null
+@@ -1,9 +0,0 @@
+-from comand_line import CMD_Game
+-
+-
+-def main():
+-    CMD_Game().cmdloop()
+-
+-
+-if __name__ == '__main__':
+-    main()
+-- 
+2.44.0
+

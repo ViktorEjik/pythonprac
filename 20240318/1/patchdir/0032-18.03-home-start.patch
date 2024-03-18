@@ -1,0 +1,548 @@
+From f8db41d2e74f89c65e57bea8dbbeb0fb52e0c3dc Mon Sep 17 00:00:00 2001
+From: Viktor Mogilenets <mogilinez17@yandex.ru>
+Date: Mon, 18 Mar 2024 20:59:18 +0300
+Subject: [PATCH 32/36] 18.03 home start
+
+---
+ 20240318/1/Pipfile        |  14 ++++
+ 20240318/1/Pipfile.lock   |  72 ++++++++++++++++++
+ 20240318/1/comand_line.py | 155 ++++++++++++++++++++++++++++++++++++++
+ 20240318/1/cows.py        |  17 +++++
+ 20240318/1/entity.py      |  89 ++++++++++++++++++++++
+ 20240318/1/exeptions.py   |  29 +++++++
+ 20240318/1/logic.py       |  78 +++++++++++++++++++
+ 20240318/1/main.py        |   9 +++
+ 20240318/1/setup.cfg      |   2 +
+ 9 files changed, 465 insertions(+)
+ create mode 100644 20240318/1/Pipfile
+ create mode 100644 20240318/1/Pipfile.lock
+ create mode 100644 20240318/1/comand_line.py
+ create mode 100644 20240318/1/cows.py
+ create mode 100644 20240318/1/entity.py
+ create mode 100644 20240318/1/exeptions.py
+ create mode 100644 20240318/1/logic.py
+ create mode 100644 20240318/1/main.py
+ create mode 100644 20240318/1/setup.cfg
+
+diff --git a/20240318/1/Pipfile b/20240318/1/Pipfile
+new file mode 100644
+index 0000000..4020346
+--- /dev/null
++++ b/20240318/1/Pipfile
+@@ -0,0 +1,14 @@
++[[source]]
++url = "https://pypi.org/simple"
++verify_ssl = true
++name = "pypi"
++
++[packages]
++python-cowsay = "*"
++
++[dev-packages]
++flake8 = "*"
++isort = "*"
++
++[requires]
++python_version = "3.12"
+diff --git a/20240318/1/Pipfile.lock b/20240318/1/Pipfile.lock
+new file mode 100644
+index 0000000..ea8ae2b
+--- /dev/null
++++ b/20240318/1/Pipfile.lock
+@@ -0,0 +1,72 @@
++{
++    "_meta": {
++        "hash": {
++            "sha256": "6bcea493f21e24c7b21d97666ab51c6b000e31c839c0706f02a98946fdf2c745"
++        },
++        "pipfile-spec": 6,
++        "requires": {
++            "python_version": "3.11"
++        },
++        "sources": [
++            {
++                "name": "pypi",
++                "url": "https://pypi.org/simple",
++                "verify_ssl": true
++            }
++        ]
++    },
++    "default": {
++        "flake8": {
++            "hashes": [
++                "sha256:33f96621059e65eec474169085dc92bf26e7b2d47366b70be2f67ab80dc25132",
++                "sha256:a6dfbb75e03252917f2473ea9653f7cd799c3064e54d4c8140044c5c065f53c3"
++            ],
++            "index": "pypi",
++            "markers": "python_full_version >= '3.8.1'",
++            "version": "==7.0.0"
++        },
++        "isort": {
++            "hashes": [
++                "sha256:48fdfcb9face5d58a4f6dde2e72a1fb8dcaf8ab26f95ab49fab84c2ddefb0109",
++                "sha256:8ca5e72a8d85860d5a3fa69b8745237f2939afe12dbf656afbcb47fe72d947a6"
++            ],
++            "index": "pypi",
++            "markers": "python_full_version >= '3.8.0'",
++            "version": "==5.13.2"
++        },
++        "mccabe": {
++            "hashes": [
++                "sha256:348e0240c33b60bbdf4e523192ef919f28cb2c3d7d5c7794f74009290f236325",
++                "sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e"
++            ],
++            "markers": "python_version >= '3.6'",
++            "version": "==0.7.0"
++        },
++        "pycodestyle": {
++            "hashes": [
++                "sha256:41ba0e7afc9752dfb53ced5489e89f8186be00e599e712660695b7a75ff2663f",
++                "sha256:44fe31000b2d866f2e41841b18528a505fbd7fef9017b04eff4e2648a0fadc67"
++            ],
++            "markers": "python_version >= '3.8'",
++            "version": "==2.11.1"
++        },
++        "pyflakes": {
++            "hashes": [
++                "sha256:1c61603ff154621fb2a9172037d84dca3500def8c8b630657d1701f026f8af3f",
++                "sha256:84b5be138a2dfbb40689ca07e2152deb896a65c3a3e24c251c5c62489568074a"
++            ],
++            "markers": "python_version >= '3.8'",
++            "version": "==3.2.0"
++        },
++        "python-cowsay": {
++            "hashes": [
++                "sha256:090cb37353f5423d5e9dda903f3f8efe1ff189fc36cec09f4d5050251ce453ab",
++                "sha256:8b3944d0410e45b622a3a4f79acea45a949ec2c052956aa19225a0f5e2d53f5c"
++            ],
++            "index": "pypi",
++            "markers": "python_version >= '3.8'",
++            "version": "==1.1.1"
++        }
++    },
++    "develop": {}
++}
+diff --git a/20240318/1/comand_line.py b/20240318/1/comand_line.py
+new file mode 100644
+index 0000000..798e5a8
+--- /dev/null
++++ b/20240318/1/comand_line.py
+@@ -0,0 +1,155 @@
++import cmd
++import shlex
++
++import exeptions
++from entity import Player
++from logic import Game, Map
++
++
++class CMD_Game(cmd.Cmd):
++
++    def __init__(self,
++                 completekey: str = "tab",
++                 stdin=None,
++                 stdout=None,
++                 game: Game | None = None) -> None:
++        # Создание новой игры
++        if not game:
++            game = Game(Map(), Player())
++        self.game = game
++        super().__init__(completekey, stdin, stdout)
++
++    prompt = 'MUD-> '
++
++    @staticmethod
++    def print_pos(res: tuple[tuple[int, int], str | None]):
++        print(f'Moved to ({res[0][0]}, {res[0][1]})')
++        if res[1]:
++            print(res[1])
++
++    def do_left(self, args):
++        if args:
++            print('Invalid command')
++        res = self.game.go_to('left')
++        self.print_pos(res)
++
++    def do_right(self, args):
++        if args:
++            print('Invalid command')
++        res = self.game.go_to('right')
++        self.print_pos(res)
++
++    def do_up(self, args):
++        if args:
++            print('Invalid command')
++        res = self.game.go_to('up')
++        self.print_pos(res)
++
++    def do_down(self, args):
++        if args:
++            print('Invalid command')
++        res = self.game.go_to('down')
++        self.print_pos(res)
++
++    def do_addmon(self, args):
++        try:
++            args = shlex.split(args)
++            args.insert(0, 'name')
++            monster = dict()
++            i = 0
++            if any(x not in args for x in ['hello', 'hp', 'coords']):
++                raise exeptions.IncorectArgument
++            while i < len(args):
++                match args[i]:
++                    case 'name' | 'hello':
++                        monster[args[i]] = args[i+1]
++                        i += 2
++                    case 'hp':
++                        monster[args[i]] = int(args[i+1])
++                        i += 2
++                    case 'coords':
++                        monster[args[i]] = int(args[i+1]), int(args[i+2])
++                        i += 3
++                    case _:
++                        raise exeptions.IncorectArgument
++        except exeptions.IncorectArgument:
++            print('Invalid command')
++            return
++        except ValueError:
++            print('Invalid arguments')
++            return
++        except IndexError:
++            print('Invalid arguments')
++            return
++
++        ans = (
++            f'Added monster {monster["name"]} to'
++            f'{monster["coords"]} saying {monster["hello"]}'
++        )
++
++        try:
++            self.game.addmon(
++                monster['coords'], monster["name"],
++                monster['hello'], monster['hp']
++            )
++        except exeptions.UnknownMonster:
++            print('Cannot add unknown monster')
++            return
++        except exeptions.ReplaseMonster:
++            ans += '\nReplaced the old monster'
++        except exeptions.IncorectArgument:
++            print('Invalid arguments')
++            return
++        print(ans)
++
++    def complete_addmon(self, text, line, begidx, endidx):
++        if all(x not in line for x in ['hello', 'hp', 'coords']):
++            return [c for c in self.game.name_of_monster if c.startswith(text)]
++
++    def do_attack(self, args):
++        res = 'Attacked {name}, damage {dmg} hp'
++        args = shlex.split(args)
++        if not args or len(args) not in [1, 3]:
++            print('Invalid arguments')
++            return
++        name, args = args[0], args[1:]
++        if args and (args[0] != 'with' or len(args) != 2):
++            print('Invalid arguments')
++            return
++        try:
++            if args:
++                dmg = self.game.attack(name=name, weapon=args[1])
++            else:
++                dmg = self.game.attack(name=name)
++
++        except exeptions.MonsterRIP as err:
++            print(res.format(name=err.name, dmg=err.dmg))
++            print(f'{err.name} died')
++            return
++        except exeptions.NOMonster:
++            print('No monster here')
++            return
++        except exeptions.NONamedMonster:
++            print(f'No {name} here')
++            return
++        except exeptions.NOWepon:
++            print('Unknown weapon')
++            return
++
++        print(res.format(name=dmg[1], dmg=dmg[0]))
++        print(f'{dmg[1]} now has {dmg[2]}')
++
++    def complete_attack(self, text, line, begidx, endidx):
++        if 'with' in line:
++            return [
++                c for c
++                in self.game.player.inventory.keys()
++                if c.startswith(text)
++            ]
++        return [c for c in self.game.name_of_monster if c.startswith(text)]
++
++    def do_EOF(self, args):
++        return True
++
++    def emptyline(self) -> bool:
++        pass
+diff --git a/20240318/1/cows.py b/20240318/1/cows.py
+new file mode 100644
+index 0000000..926ed2e
+--- /dev/null
++++ b/20240318/1/cows.py
+@@ -0,0 +1,17 @@
++cow_dict = {
++    'jgsbat': '''
++$the_cow = <<EOC;
++         $thoughts
++          $thoughts
++    ,_                    _,
++    ) '-._  ,_    _,  _.-' (
++    )  _.-'.|\\--//|.'-._  (
++     )'   .'\/o\/o\/'.   `(
++      ) .' . \====/ . '. (
++       )  / <<    >> \  (
++        '-._/``  ``\_.-'
++  jgs     __\\'--'//__
++         (((""`  `"")))
++    EOC
++    '''
++}
+diff --git a/20240318/1/entity.py b/20240318/1/entity.py
+new file mode 100644
+index 0000000..89142db
+--- /dev/null
++++ b/20240318/1/entity.py
+@@ -0,0 +1,89 @@
++import abc
++from io import StringIO
++
++from cowsay import cowsay, list_cows, read_dot_cow
++
++import cows
++import exeptions
++
++MAP_LENGTH = 10
++
++
++class Wepon(abc.ABC):
++    damage: int
++
++
++class Sword(Wepon):
++    damage = 10
++
++
++class Spear(Wepon):
++    damage = 15
++
++
++class Axe(Wepon):
++    damage = 20
++
++
++class Player:
++    orient = {
++        'left': (-1, 0),
++        'right': (1, 0),
++        'up': (0, -1),
++        'down': (0, 1)
++    }
++
++    inventory = {
++        'sword': Sword(),
++        'axe': Axe(),
++        'spear': Spear()
++    }
++
++    def __init__(self) -> None:
++        self._position = (0, 0)
++
++    @property
++    def position(self) -> tuple[int, int]:
++        return self._position
++
++    @position.setter
++    def position(self, pos: tuple[int, int]):
++        self._position = pos
++
++    def move(self, orientation: str):
++        self.position = (
++            (self.position[0] + self.orient[orientation][0]) % MAP_LENGTH,
++            (self.position[1] + self.orient[orientation][1]) % MAP_LENGTH
++        )
++
++    def attack_with(self, weapon: str) -> Wepon:
++        if weapon in self.inventory:
++            return self.inventory.get(weapon)
++        raise exeptions.NOWepon
++
++
++class Monster:
++    def __init__(self, name: str, hellow: str, hp: int) -> None:
++        self.hellow = hellow
++        if (name not in list_cows()) and (name not in cows.cow_dict):
++            raise exeptions.UnknownMonster
++        self.name = name
++        self.hp = hp
++
++    def __bool__(self):
++        return self.hp > 0
++
++    def boo(self) -> str:
++        try:
++            return cowsay(message=self.hellow, cow=self.name)
++        except Exception:
++            cow = read_dot_cow(StringIO(cows.cow_dict[self.name]))
++            return cowsay(message=self.hellow, cowfile=cow)
++
++    def healing(self, hp: int) -> int:
++        if hp <= self.hp:
++            self.hp -= hp
++            return hp
++        old = self.hp
++        self.hp = 0
++        return old
+diff --git a/20240318/1/exeptions.py b/20240318/1/exeptions.py
+new file mode 100644
+index 0000000..3c54ad4
+--- /dev/null
++++ b/20240318/1/exeptions.py
+@@ -0,0 +1,29 @@
++class MonsterRIP(Exception):
++    def __init__(self, dmg: int, name: str, *args: object) -> None:
++        super().__init__(*args)
++        self.dmg = dmg
++        self.name = name
++
++
++class NOWepon(Exception):
++    pass
++
++
++class NOMonster(Exception):
++    pass
++
++
++class NONamedMonster(Exception):
++    pass
++
++
++class ReplaseMonster(Exception):
++    pass
++
++
++class IncorectArgument(Exception):
++    pass
++
++
++class UnknownMonster(Exception):
++    pass
+diff --git a/20240318/1/logic.py b/20240318/1/logic.py
+new file mode 100644
+index 0000000..9a6bd58
+--- /dev/null
++++ b/20240318/1/logic.py
+@@ -0,0 +1,78 @@
++from cowsay import list_cows
++
++import cows
++import exeptions
++from entity import Monster, Player
++
++MAP_LENGTH = 10
++
++
++class Map:
++    def __init__(self) -> None:
++        self.map = [
++            [None for _ in range(MAP_LENGTH)] for _ in range(MAP_LENGTH)
++        ]
++
++    def set_evant(self, position: tuple[int, int], evant: Monster | None):
++        x, y = position
++        flag = bool(self.map[x][y])
++        self.map[x][y] = evant
++        if flag:
++            raise exeptions.ReplaseMonster
++
++    def get_evant(self, position: tuple[int, int]) -> Monster:
++        x, y = position
++        return self.map[x][y]
++
++    def is_evant(self, position: tuple[int, int]) -> bool:
++        x, y = position
++        return self.map[x][y] is not None
++
++
++class Game:
++    name_of_monster: list[str] = list_cows() + list(cows.cow_dict)
++
++    def __init__(self, map: Map, player: Player) -> None:
++        self.map = map
++        self.player = player
++
++    def addmon(self,
++               position: tuple[int, int],
++               name: str,
++               hellow: str,
++               hp: int):
++        try:
++            monster = Monster(name, hellow, hp)
++            self.map.set_evant(position, monster)
++        except exeptions.UnknownMonster as err:
++            raise err
++        except exeptions.ReplaseMonster as err:
++            raise err
++        except Exception:
++            raise exeptions.IncorectArgument
++
++    def attack(self, name: str, weapon='sword') -> tuple[int, str, int]:
++        play_pos = self.player.position
++        monster = self.map.get_evant(play_pos)
++        if not monster:
++            raise exeptions.NOMonster
++
++        if name != monster.name:
++            raise exeptions.NONamedMonster
++        weapon = self.player.attack_with(weapon)
++        dmg = monster.healing(weapon.damage)
++
++        if monster.hp == 0:
++            self.map.set_evant(play_pos, None)
++            raise exeptions.MonsterRIP(dmg=dmg, name=monster.name)
++        return dmg, monster.name, monster.hp
++
++    def go_to(self, orientation: str) -> tuple[tuple[int, int], str | None]:
++        self.player.move(orientation)
++        pos = self.player.position
++        res = (pos,)
++        if self.map.is_evant(pos):
++            res += (self.map.get_evant(pos).boo(), )
++        else:
++            res += (None, )
++        return res
+diff --git a/20240318/1/main.py b/20240318/1/main.py
+new file mode 100644
+index 0000000..d58d1fd
+--- /dev/null
++++ b/20240318/1/main.py
+@@ -0,0 +1,9 @@
++from comand_line import CMD_Game
++
++
++def main():
++    CMD_Game().cmdloop()
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/20240318/1/setup.cfg b/20240318/1/setup.cfg
+new file mode 100644
+index 0000000..793c953
+--- /dev/null
++++ b/20240318/1/setup.cfg
+@@ -0,0 +1,2 @@
++[flake8]
++exclude = cows.py
+-- 
+2.44.0
+
