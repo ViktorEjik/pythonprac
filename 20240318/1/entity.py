@@ -62,23 +62,28 @@ class Player:
         raise exeptions.NOWepon
 
 
-class Monster:
-    def __init__(self, name: str, hellow: str, hp: int) -> None:
+class Print_Monster:
+    def __init__(self, name: str, hellow: str) -> None:
         self.hellow = hellow
         if (name not in list_cows()) and (name not in cows.cow_dict):
             raise exeptions.UnknownMonster
         self.name = name
-        self.hp = hp
-
-    def __bool__(self):
-        return self.hp > 0
-
-    def boo(self) -> str:
+    
+    def __str__(self) -> str:
         try:
             return cowsay(message=self.hellow, cow=self.name)
         except Exception:
             cow = read_dot_cow(StringIO(cows.cow_dict[self.name]))
             return cowsay(message=self.hellow, cowfile=cow)
+
+
+class Monster(Print_Monster):
+    def __init__(self, name: str, hellow: str, hp: int) -> None:
+        super().__init__(name, hellow)
+        self.hp = hp
+
+    def __bool__(self):
+        return self.hp > 0
 
     def healing(self, hp: int) -> int:
         if hp <= self.hp:
