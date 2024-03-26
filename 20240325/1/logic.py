@@ -52,8 +52,13 @@ class Game:
         except Exception:
             raise exeptions.IncorectArgument
 
-    def attack(self, name: str, weapon='sword') -> tuple[int, str, int]:
-        play_pos = self.player.position
+    def attack(
+        self,
+        player:Player,
+        name: str,
+        weapon='sword'
+    ) -> tuple[int, str, int]:
+        play_pos = player.position
         monster = self.map.get_evant(play_pos)
         if not monster:
             raise exeptions.NOMonster
@@ -61,7 +66,7 @@ class Game:
         if name != monster.name:
             raise exeptions.NONamedMonster
 
-        weapon = self.player.attack_with(weapon)
+        weapon = player.attack_with(weapon)
         dmg = monster.healing(weapon.damage)
 
         if not monster:
@@ -71,19 +76,24 @@ class Game:
 
     def go_to(
         self,
-        orientation: str
-    ) -> tuple[tuple[int, int], str | None, str | None]:
+        orientation: str,
+        player: Player
+    ) -> tuple[tuple[int, int], str | None]:
 
-        self.player.move(orientation)
-        pos = self.player.position
+        player.move(orientation)
+        pos = player.position
         res = (pos,)
         if self.map.is_evant(pos):
-            res += (
-                (self.map.get_evant(pos).name, self.map.get_evant(pos).hellow))
+            res += (str(self.map.get_evant(pos)), )
         else:
-            res += (None, None)
+            res += (None,)
         return res
     
-    def add_new_player(self, player_name: str):
+    def add_new_player(self, player_name: str) -> Player:
         if player_name in self.pl_list:
-            raise 
+            raise exeptions.PlayerExist
+        self.pl_list[player_name] = Player(player_name)
+        return self.pl_list[player_name]
+    
+    def del_player(self, player: Player) -> None:
+        del self.pl_list[player.name]

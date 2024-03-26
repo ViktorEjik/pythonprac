@@ -2,15 +2,23 @@ import cmd
 import shlex
 import socket
 import sys
+import readline
+import threading
 
 import exeptions
-from entity import Print_Monster
+
+
+def msg_sendreciever(client, socket):
+    while response := socket.recv(1024).rstrip().decode():
+        print(f"\n{response}\n{client.prompt}{readline.get_line_buffer()}", end="", flush=True)
+
 
 
 class CMD_Game(cmd.Cmd):
 
     def __init__(self,
                  socket,
+                 name,
                  completekey: str = "tab",
                  stdin=None,
                  stdout=None,
@@ -21,18 +29,17 @@ class CMD_Game(cmd.Cmd):
         self.name_of_monster = eval(socket.recv(1024).rstrip().decode())
         socket.sendall('invent\n'.encode())
         self.player_inventory = eval(socket.recv(1024).rstrip().decode())
+        self.prompt = f'MUD({name})-> '
+        self.intro =(
+            '<<< Welcome to Python-MUD 0.1 >>>\n'
+            'Type help or ? to list commands.\n'
+        )
         super().__init__(completekey, stdin, stdout)
 
-    prompt = 'MUD-> '
+        
 
     def print_pos(self, orient):
         self.socket.sendall(f'{orient}\n'.encode())
-        response = self.socket.recv(1024).rstrip().decode().split('\\')
-        pos = response[0]
-        print(f'Moved to ({pos})')
-        if len(response) > 1:
-            name, hellow = shlex.split(response[1])
-            print(Print_Monster(name, hellow))
 
     def do_left(self, args):
         if args:
@@ -76,6 +83,7 @@ class CMD_Game(cmd.Cmd):
                         i += 3
                     case _:
                         raise exeptions.IncorectArgument
+        
         except exeptions.IncorectArgument:
             print('Invalid command')
             return
@@ -86,6 +94,7 @@ class CMD_Game(cmd.Cmd):
             print('Invalid arguments')
             return
         monster['hello'] = '"' + monster['hello'] + '"'
+        
         self.socket.sendall(
             (
                 f"addmon {monster['name']} {monster['coords'][0]} "
@@ -94,28 +103,11 @@ class CMD_Game(cmd.Cmd):
             ).encode()
         )
 
-        response = self.socket.recv(1024).rstrip().decode()
-
-        if response == '0':
-            print(
-                f'Added monster {monster["name"]} to '
-                f'{monster["coords"]} saying {monster["hello"]}'
-            )
-        elif response == '1':
-            print(
-                f'Added monster {monster["name"]} to'
-                f'{monster["coords"]} saying {monster["hello"]}'
-                '\nReplaced the old monster'
-            )
-        elif response == '2':
-            print('Cannot add unknown monster')
-
     def complete_addmon(self, text, line, begidx, endidx):
         if all(x not in line for x in ['hello', 'hp', 'coords']):
             return [c for c in self.name_of_monster if c.startswith(text)]
 
     def do_attack(self, args):
-        res = 'Attacked {name}, damage {dmg} hp'
 
         args = shlex.split(args)
         if not args or len(args) not in [1, 3]:
@@ -130,20 +122,6 @@ class CMD_Game(cmd.Cmd):
         self.socket.sendall(
             f'attack {name} { args[1] if args else "sword"}\n'.encode()
         )
-        state, *dmg = shlex.split(self.socket.recv(1024).rstrip().decode())
-
-        if state == '0':
-            print(res.format(name=name, dmg=dmg[0]))
-            print(f'{name} now has {dmg[1]}')
-        elif state == '1':
-            print(res.format(name=name, dmg=dmg[0]))
-            print(f'{name} died')
-        elif state == '2':
-            print('No monster here')
-        elif state == '3':
-            print(f'No {name} here')
-        elif state == '4':
-            print('Unknown weapon')
 
     def complete_attack(self, text, line, begidx, endidx):
         if 'with' in line:
@@ -152,9 +130,17 @@ class CMD_Game(cmd.Cmd):
                 in self.player_inventory
                 if c.startswith(text)
             ]
-        return [c for c in self.game.name_of_monster if c.startswith(text)]
+        return [c for c in self.name_of_monster if c.startswith(text)]
 
+    def do_me(self, *args):
+        self.socket.sendall('me\n'.encode())
+
+    def do_exit(self, args):
+        self.socket.sendall('drp\n'.encode())
+        return True
+    
     def do_EOF(self, args):
+        self.socket.sendall('drp\n'.encode())
         return True
 
     def emptyline(self) -> bool:
@@ -166,10 +152,15 @@ if __name__ == '__main__':
     port = 1337
     name = sys.argv[1]
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.sendall(name.encode())
+        s.connect((host, port))
+        s.sendall((name+'\n').encode())
         connect_ans = int(s.recv(1024).rstrip().decode())
-        if connect_ans:
-            s.connect((host, port))
-            cli = CMD_Game(s, name).cmdloop()
+        
+        if not connect_ans:
+            cli = CMD_Game(s, name)
+            request = threading.Thread(target = msg_sendreciever, args = (cli, cli.socket))
+            request.start()
+            cli.cmdloop()
+            request
         else:
             print(f'Can`t connect with {name}')

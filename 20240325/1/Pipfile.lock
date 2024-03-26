@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6bcea493f21e24c7b21d97666ab51c6b000e31c839c0706f02a98946fdf2c745"
+            "sha256": "f139f9d3941ee1c5adb848784c75378ada6d6d928e39e06e678a5fe982be04ec"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.11"
+            "python_version": "3.12"
         },
         "sources": [
             {
@@ -16,6 +16,17 @@
         ]
     },
     "default": {
+        "python-cowsay": {
+            "hashes": [
+                "sha256:69aa91072e36ff27ceb8261718323c9ab275b3470b2260841c5b9ad5d83e8ff3",
+                "sha256:eae49ea3abc00dba38f166e92f2e8f103a75182a944eb7b79aab5b515ca0363d"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==1.2.0"
+        }
+    },
+    "develop": {
         "flake8": {
             "hashes": [
                 "sha256:33f96621059e65eec474169085dc92bf26e7b2d47366b70be2f67ab80dc25132",
@@ -57,16 +68,6 @@
             ],
             "markers": "python_version >= '3.8'",
             "version": "==3.2.0"
-        },
-        "python-cowsay": {
-            "hashes": [
-                "sha256:090cb37353f5423d5e9dda903f3f8efe1ff189fc36cec09f4d5050251ce453ab",
-                "sha256:8b3944d0410e45b622a3a4f79acea45a949ec2c052956aa19225a0f5e2d53f5c"
-            ],
-            "index": "pypi",
-            "markers": "python_version >= '3.8'",
-            "version": "==1.1.1"
         }
-    },
-    "develop": {}
+    }
 }

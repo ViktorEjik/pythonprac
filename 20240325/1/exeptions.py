@@ -5,6 +5,10 @@ class MonsterRIP(Exception):
         self.name = name
 
 
+class PlayerExist(Exception):
+    pass
+
+
 class NOWepon(Exception):
     pass
 

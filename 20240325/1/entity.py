@@ -39,8 +39,9 @@ class Player:
         'spear': Spear()
     }
 
-    def __init__(self) -> None:
+    def __init__(self, name) -> None:
         self._position = (0, 0)
+        self.name = name
 
     @property
     def position(self) -> tuple[int, int]:
@@ -60,6 +61,14 @@ class Player:
         if weapon in self.inventory:
             return self.inventory.get(weapon)
         raise exeptions.NOWepon
+
+    def __str__(self) -> str:
+        ans = (
+            f'\tname: {self.name}\n'
+            f'\tinventnory: {list(self.inventory.keys())}\n'
+            f'\tpos: {self.position}'
+        )
+        return ans
 
 
 class Print_Monster:
