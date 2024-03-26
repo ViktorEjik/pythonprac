@@ -11,7 +11,7 @@ class Server:
         self.clients = dict()
 
     async def _client(self, reader, writer):
-        
+
         name = (await reader.readline()).decode().rstrip()
 
         try:
@@ -34,8 +34,7 @@ class Server:
 
         print('connect!', name)
         writer.write('0'.encode())
-            
-        
+
         while not reader.at_eof():
             done, pending = await asyncio.wait([send, receive], return_when=asyncio.FIRST_COMPLETED)
 
@@ -45,11 +44,11 @@ class Server:
                     data = q.result().decode().strip()
 
                     comand = shlex.split(data)
-                    
+
                     match comand:
                         case ['me']:
                             await self.clients[me].put(str(me))
-                        
+
                         case ['cows']:
                             await self.clients[me].put(str(self.game.name_of_monster))
 
@@ -85,8 +84,6 @@ class Server:
                                 if el is not self.clients[me]:
                                     await el.put(f'User {me.name} added monster {args[0]} with {args[4]} hp')
 
-                            
-
                         case ['attack', *args]:
                             res = 'Attacked {name}, damage {dmg} hp'
 
@@ -95,12 +92,15 @@ class Server:
                                 dmg = self.game.attack(player=me, name=name, weapon=weapon)
 
                             except exeptions.MonsterRIP as err:
-                                await self.clients[me].put(res.format(name=err.name, dmg=err.dmg) + f'\n{err.name} died')
+                                await self.clients[me].put(
+                                    res.format(name=err.name, dmg=err.dmg) + f'\n{err.name} died'
+                                )
                                 for el in self.clients.values():
                                     if el is not self.clients[me]:
                                         await el.put(
-                                            f"User {me.name} attacked monster {err.name} with {weapon}, damage {err.dmg} hp"
-                                            + f"\n{name} died"
+                                            f'User {me.name} attacked monster {err.name} with {weapon},'
+                                            + f' damage {err.dmg} hp'
+                                            + f'\n{name} died'
                                         )
 
                                 continue
@@ -113,7 +113,9 @@ class Server:
                             except exeptions.NOWepon:
                                 await self.clients[me].put('Unknown weapon')
                                 continue
-                            await self.clients[me].put(res.format(name=name, dmg=dmg[0]) + f'\n{name} now has {dmg[2]} hp')
+                            await self.clients[me].put(
+                                res.format(name=name, dmg=dmg[0]) + f'\n{name} now has {dmg[2]} hp'
+                            )
 
                             for el in self.clients.values():
                                 if el is not self.clients[me]:
@@ -135,19 +137,16 @@ class Server:
                     writer.write(f"{q.result()}\n".encode())
                     await writer.drain()
 
-
         send.cancel()
         receive.cancel()
         if me:
             self.game.del_player(me)
             del self.clients[me]
             for el in self.clients.values():
-                    await el.put(f'{me.name} disconnected')
+                await el.put(f'{me.name} disconnected')
 
-        
         writer.close()
         await writer.wait_closed()
-
 
     def new_client(self):
         return self._client

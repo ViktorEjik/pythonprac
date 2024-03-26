@@ -54,7 +54,7 @@ class Game:
 
     def attack(
         self,
-        player:Player,
+        player: Player,
         name: str,
         weapon='sword'
     ) -> tuple[int, str, int]:
@@ -88,12 +88,12 @@ class Game:
         else:
             res += (None,)
         return res
-    
+
     def add_new_player(self, player_name: str) -> Player:
         if player_name in self.pl_list:
             raise exeptions.PlayerExist
         self.pl_list[player_name] = Player(player_name)
         return self.pl_list[player_name]
-    
+
     def del_player(self, player: Player) -> None:
         del self.pl_list[player.name]
