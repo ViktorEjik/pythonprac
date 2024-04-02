@@ -37,6 +37,9 @@ class CMD_Game(cmd.Cmd):
     def print_pos(self, orient):
         self.socket.sendall(f'{orient}\n'.encode())
 
+    def do_sayall(self, args):
+        self.socket.sendall(('sayall ' + args + '\n').encode())
+
     def do_left(self, args):
         if args:
             print('Invalid command')

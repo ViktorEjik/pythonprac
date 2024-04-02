@@ -44,8 +44,14 @@ class Server:
                     data = q.result().decode().strip()
 
                     comand = shlex.split(data)
-
+                    print(comand)
                     match comand:
+                        case['sayall', *message]:
+                            print(message)
+                            for el in self.clients.values():
+                                if el is not  self.clients[me]:
+                                    await el.put(f'({me.name}): ' + ' '.join(message))
+
                         case ['me']:
                             await self.clients[me].put(str(me))
 
