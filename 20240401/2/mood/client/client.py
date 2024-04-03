@@ -96,6 +96,7 @@ class CMD_Game(cmd.Cmd):
                         i += 2
                     case 'hp':
                         monster[args[i]] = int(args[i+1])
+                        i+=2
                     case 'coords':
                         monster[args[i]] = int(args[i+1]), int(args[i+2])
                         i += 3
