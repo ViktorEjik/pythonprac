@@ -26,7 +26,7 @@ class CMD_Game(cmd.Cmd):
                  ) -> None:
         """Init comand line."""
         self.socket = socket
-        
+
         self.prompt = f'MUD({name})-> '
         self.intro = (
             '<<< Welcome to Python-MUD 0.1 >>>\n'
@@ -42,8 +42,8 @@ class CMD_Game(cmd.Cmd):
     def precmd(self, line):
         if self.stdin.name != '<stdin>':
             time.sleep(1)
-        
-        return super().precmd(line) 
+
+        return super().precmd(line)
 
     def print_pos(self, orient):
         """Send server signal to move player on orientatuion."""
@@ -105,7 +105,7 @@ class CMD_Game(cmd.Cmd):
                         i += 2
                     case 'hp':
                         monster[args[i]] = int(args[i+1])
-                        i+=2
+                        i += 2
                     case 'coords':
                         monster[args[i]] = int(args[i+1]), int(args[i+2])
                         i += 3

@@ -15,12 +15,12 @@ if sys.argv[1] == '--file':
             name = sys.argv[2].split('.')[0]
             s.sendall((name+'\n').encode())
             connect_ans = int(s.recv(1024).rstrip().decode())
-            
+
             if not connect_ans:
                 scr = CMD_Game(s, stdin=file, name=name)
                 request = threading.Thread(target=msg_sendreciever, args=(scr, scr.socket))
                 request.start()
-                
+
                 scr.prompt = ''
                 scr.use_rawinput = False
                 scr.cmdloop()

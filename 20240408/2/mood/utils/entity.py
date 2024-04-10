@@ -128,6 +128,6 @@ class Monster(Print_Monster):
         old = self.hp
         self.hp = 0
         return old
-    
+
     def copy(self):
         return Monster(self.name, self.hellow, self.hp)
