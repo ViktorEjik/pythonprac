@@ -23,6 +23,7 @@ if sys.argv[1] == '--file':
 
                 scr.prompt = ''
                 scr.use_rawinput = False
+                scr.emptyline = lambda x: True
                 scr.cmdloop()
             else:
                 print(f'Can`t connect with {name}')

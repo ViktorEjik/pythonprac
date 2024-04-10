@@ -58,6 +58,9 @@ class Server:
                                 if el is not self.clients[me]:
                                     await el.put(f'({me.name}): ' + ' '.join(message))
 
+                        case['online']:
+                            await self.clients[me].put(', '.join(self.game.pl_list))
+
                         case ['me']:
                             await self.clients[me].put(str(me))
 

@@ -168,6 +168,9 @@ class CMD_Game(cmd.Cmd):
             ]
         return [c for c in self.name_of_monster if c.startswith(text)]
 
+    def do_online(self, *args):
+        self.socket.sendall('online\n'.encode())
+
     def do_me(self, *args):
         """Print iformation of you person."""
         self.socket.sendall('me\n'.encode())
@@ -184,4 +187,4 @@ class CMD_Game(cmd.Cmd):
 
     def emptyline(self) -> bool:
         """Nead to write empty line."""
-        return True
+        pass
