@@ -3,6 +3,7 @@
 import cmd
 import shlex
 import readline
+import time
 
 from ..utils.exeptions import IncorectArgument
 
@@ -25,16 +26,24 @@ class CMD_Game(cmd.Cmd):
                  ) -> None:
         """Init comand line."""
         self.socket = socket
-        socket.sendall('cows\n'.encode())
-        self.name_of_monster = eval(socket.recv(1024).rstrip().decode())
-        socket.sendall('invent\n'.encode())
-        self.player_inventory = eval(socket.recv(1024).rstrip().decode())
+        
         self.prompt = f'MUD({name})-> '
         self.intro = (
             '<<< Welcome to Python-MUD 0.1 >>>\n'
             'Type help or ? to list commands.\n'
         )
         super().__init__(completekey, stdin, stdout)
+        if self.stdin.name == '<stdin>':
+            socket.sendall('cows\n'.encode())
+            self.name_of_monster = eval(socket.recv(1024).rstrip().decode())
+            socket.sendall('invent\n'.encode())
+            self.player_inventory = eval(socket.recv(1024).rstrip().decode())
+
+    def precmd(self, line):
+        if self.stdin.name != '<stdin>':
+            time.sleep(1)
+        
+        return super().precmd(line) 
 
     def print_pos(self, orient):
         """Send server signal to move player on orientatuion."""
