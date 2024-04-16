@@ -14,9 +14,11 @@ class Server:
         """Init game."""
         self.game = Game(Map(), Player('adm'), t_sleep_mon)
         self.clients = dict()
-        wandering_monster = asyncio.create_task(
-            self.game.wandering_monster(wandering_monster, self.clients)
-        )
+        self.wandering_monster = None
+        if wandering_monster:
+            self.wandering_monster = asyncio.create_task(
+                self.game.wandering_monster(self.clients)
+            )
 
     async def _client(self, reader, writer):
         """Client's request handler."""
@@ -53,6 +55,24 @@ class Server:
 
                     comand = shlex.split(data)
                     match comand:
+                        case ['movemonsters', state]:
+                            if state == 'on':
+                                if (
+                                    self.wandering_monster is None
+                                    or self.wandering_monster.cancelled()
+                                    or self.wandering_monster.done()
+                                ):
+                                    self.wandering_monster = asyncio.create_task(
+                                        self.game.wandering_monster(
+                                            self.clients
+                                        )
+                                    )
+                            else:
+                                self.wandering_monster.cancel()
+
+                            for el in self.clients.values():
+                                await el.put('Moving monsters: ' + state)
+
                         case['sayall', *message]:
                             for el in self.clients.values():
                                 if el is not self.clients[me]:

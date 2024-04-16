@@ -143,11 +143,8 @@ class Game:
         """Delate disconnected player."""
         del self.pl_list[player.name]
 
-    async def wandering_monster(self, flag, clients):
-        
-        if not flag:
-            print('wandering_monster off')
-            return
+    async def wandering_monster(self, clients):
+
         print('wandering_monster on, sleep =', self.t_sleep)
         while True:
             if not self.map.monsters:
@@ -171,4 +168,3 @@ class Game:
                     await clients[client].put(str(monster)+'\n')
             print(f'Monster from ({x, y}) move to {new}')
             await asyncio.sleep(self.t_sleep)
-        

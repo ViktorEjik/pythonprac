@@ -9,14 +9,15 @@ from .server import Server
 async def main():
     """Start game server."""
     args = sys.argv
-    test = False
+    move_on = False
     t_sleep_monst = 30
-    if '--test' not in args:
-        test = True
+    if '--move_on' in args:
+        move_on = True
     if '--t_sleep' in args:
         ix = args.index('--t_sleep')
         t_sleep_monst = int(args[ix + 1])
-    server = await asyncio.start_server(Server(test, t_sleep_monst).new_client(), '0.0.0.0', 1337)
+    
+    server = await asyncio.start_server(Server(move_on, t_sleep_monst).new_client(), '0.0.0.0', 1337)
     async with server:
         await server.serve_forever()
 
