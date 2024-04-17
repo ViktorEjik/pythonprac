@@ -51,10 +51,11 @@ class Player:
         'spear': Spear()
     }
 
-    def __init__(self, name) -> None:
+    def __init__(self, name, locale=None) -> None:
         """Init player."""
         self._position = (0, 0)
         self.name = name
+        self.locale = locale
 
     @property
     def position(self) -> tuple[int, int]:

@@ -17,6 +17,7 @@ LOCALES = {
 }
 
 def _(text, locale):
+    print('_', text)
     return LOCALES[locale].gettext(text)
 
 def ngettext(*args, locale):
@@ -42,7 +43,7 @@ class Server:
         name = (await reader.readline()).decode().rstrip()
 
         try:
-            me = self.game.add_new_player(name)
+            me = self.game.add_new_player(name, locale='en_US')
         except exeptions.PlayerExist:
 
             writer.write('1'.encode())
@@ -54,10 +55,10 @@ class Server:
 
         send = asyncio.create_task(reader.readline())
         receive = asyncio.create_task(self.clients[me].get())
-        locale = 'en_US'
-        for el in self.clients.values():
+        me.locale = 'en_US'
+        for obj, el in self.clients.items():
             if el is not self.clients[me]:
-                await el.put(_('User {} connected', locale=locale).format(me.name))
+                await el.put(_('User {} connected', locale=obj.locale).format(me.name))
 
         print('connect!', name)
         writer.write('0'.encode())
@@ -74,7 +75,10 @@ class Server:
                     match comand:
                         case ['locale', args]:
                             if args == 'ru':
-                                locale = 'ru_RU'
+                                me.locale = 'ru_RU'
+                            elif args == 'en':
+                                me.locale = 'en_US'
+                            await self.clients[me].put('Locale: ' + me.locale)
 
                         case['online']:
                             await self.clients[me].put(', '.join(self.game.pl_list))
@@ -94,8 +98,8 @@ class Server:
                             else:
                                 self.wandering_monster.cancel()
 
-                            for el in self.clients.values():
-                                await el.put(_('Moving monsters: ', locale=locale) + state)
+                            for obj, qeue in self.clients.items():
+                                await qeue.put(_('Moving monsters: ', locale=obj.locale) + state)
 
                         case['sayall', *message]:
                             for el in self.clients.values():
@@ -114,16 +118,16 @@ class Server:
                         case ['left' | 'right' | 'up' | 'down']:
                             
                             res = self.game.go_to(comand[0], me)
-                            ans = _('Move to {}', locale=locale).format(res[0])
+                            ans = _('Move to {}', locale=me.locale).format(res[0])
                             if res[1]:
                                 ans += '\n' + res[1]
                             await self.clients[me].put(str((ans+'\n')))
 
                         case ['addmon', *args]:
                             ans = (
-                                    _('Added monster {} to ', locale=locale).format(args[0])
+                                    _('Added monster {} to ', locale=me.locale).format(args[0])
                                     + '({}, {}) '.format(int(args[1]), int(args[2]))
-                                    + _('saying "{}"', locale=locale).format(args[3])
+                                    + _('saying "{}"', locale=me.locale).format(args[3])
                                 )
 
                             try:
@@ -132,20 +136,20 @@ class Server:
                                     args[3], int(args[4])
                                 )
                             except exeptions.UnknownMonster:
-                                ans = _('Cannot add unknown monster', locale=locale)
+                                ans = _('Cannot add unknown monster', locale=me.locale)
                                 continue
                             except exeptions.ReplaseMonster:
-                                ans += _('\nReplaced the old monster', locale=locale)
+                                ans += _('\nReplaced the old monster', locale=me.locale)
                             await self.clients[me].put(ans)
 
-                            for el in self.clients.values():
+                            for obj, el in self.clients.items():
                                 if el is not self.clients[me]:
                                     await el.put(
-                                        _('User {} ', locale=locale).format(me.name)
-                                        + _('added monster {} ', locale=locale).format(args[0])
+                                        _('User {} ', locale=obj.locale).format(me.name)
+                                        + _('added monster {} ', locale=obj.locale).format(args[0])
                                         + ngettext(
                                             'with {} hp', 'with {} hps',
-                                             args[4], locale=locale
+                                            int(args[4]), locale=obj.locale
                                         ).format(args[4])
                                     )
 
@@ -163,65 +167,65 @@ class Server:
                                 await self.clients[me].put(
                                     ngettext(
                                         *res,
-                                        err.dmg, locale=locale
+                                        err.dmg, locale=me.locale
                                     ).format(name=err.name, dmg=err.dmg)
-                                    + _('\n{} died', locale=locale).format(err.name)
+                                    + _('\n{} died', locale=me.locale).format(err.name)
                                 )
-                                for el in self.clients.values():
+                                for obj, el in self.clients.items():
                                     if el is not self.clients[me]:
                                         await el.put(
-                                            _('User {} ', locale=locale).format(me.name)
-                                            + _('attacked monster {} ', locale=locale).format(err.name)
-                                            + _('with {}, ', locale=locale).format(weapon)
+                                            _('User {} ', locale=obj.locale).format(me.name)
+                                            + _('attacked monster {} ', locale=obj.locale).format(err.name)
+                                            + _('with {}, ', locale=obj.locale).format(weapon)
                                             + ngettext(
                                                 'damage {} hp', 'damage {} hps',
-                                                err.dmg, locale=locale
+                                                err.dmg, locale=obj.locale
                                             ).format(err.dmg)
-                                            + _('\n{} died', locale=locale).format(name)
+                                            + _('\n{} died', locale=obj.locale).format(name)
                                         )
 
                                 continue
                             except exeptions.NOMonster:
-                                await self.clients[me].put(_('No monster here', locale=locale))
+                                await self.clients[me].put(_('No monster here', locale=me.locale))
                                 continue
                             except exeptions.NONamedMonster:
-                                await self.clients[me].put(_('No {} here', locale=locale).format(name))
+                                await self.clients[me].put(_('No {} here', locale=me.locale).format(name))
                                 continue
                             except exeptions.NOWepon:
-                                await self.clients[me].put(_('Unknown weapon', locale=locale))
+                                await self.clients[me].put(_('Unknown weapon', locale=me.locale))
                                 continue
                             await self.clients[me].put(
                                 ngettext(
                                         *res,
-                                        dmg[0], locale=locale
+                                        dmg[0], locale=me.locale
                                     ).format(name=name, dmg=dmg[0])
                                 + ngettext(
                                     '\n{} now has {} hp', '\n{} now has {} hps',
-                                    dmg[2], locale=locale
+                                    dmg[2], locale=me.locale
                                 ).format(name, dmg[2])
                             )
 
-                            for el in self.clients.values():
+                            for obj, el in self.clients.items():
                                 if el is not self.clients[me]:
                                     await el.put(
-                                        _('User {} ', locale=locale).format(me.name)
-                                        + _('attacked monster {} ', locale=locale).format(err.name)
-                                        + _('with {}, ', locale=locale).format(weapon)
+                                        _('User {} ', locale=obj.locale).format(me.name)
+                                        + _('attacked monster {} ', locale=obj.locale).format(name)
+                                        + _('with {}, ', locale=obj.locale).format(weapon)
                                         + ngettext(
                                             'damage {} hp', 'damage {} hps',
-                                            err.dmg, locale=locale
-                                        ).format(err.dmg)
+                                            dmg[0], locale=obj.locale
+                                        ).format(dmg[0])
                                         + ngettext(
                                             '\n{} now has {} hp', '\n{} now has {} hps',
-                                            dmg[2], locale=locale
+                                            dmg[2], locale=obj.locale
                                         ).format(name, dmg[2])
                                     )
 
                         case ['drp']:
                             self.game.del_player(me)
                             del self.clients[me]
-                            for el in self.clients.values():
-                                await el.put(_('{} disconnected', locale=locale).format(me.name))
+                            for obj, el in self.clients.items():
+                                await el.put(_('{} disconnected', locale=obj.locale).format(me.name))
                             me = None
                             break
 
@@ -235,8 +239,8 @@ class Server:
         if me:
             self.game.del_player(me)
             del self.clients[me]
-            for el in self.clients.values():
-                await el.put(_('{} disconnected', locale=locale).format(me.name))
+            for obj, el in self.clients.items():
+                await el.put(_('{} disconnected', locale=obj.locale).format(me.name))
 
         writer.close()
         await writer.wait_closed()

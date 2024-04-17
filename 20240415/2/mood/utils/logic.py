@@ -132,11 +132,11 @@ class Game:
             res += (None,)
         return res
 
-    def add_new_player(self, player_name: str) -> Player:
+    def add_new_player(self, player_name: str, locale: str) -> Player:
         """Add new connected player."""
         if player_name in self.pl_list:
             raise PlayerExist
-        self.pl_list[player_name] = Player(player_name)
+        self.pl_list[player_name] = Player(player_name, locale)
         return self.pl_list[player_name]
 
     def del_player(self, player: Player) -> None:

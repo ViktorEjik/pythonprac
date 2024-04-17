@@ -134,3 +134,6 @@ msgstr[2] ""
 msgid "{} disconnected"
 msgstr "{} отключился"
 
+msgid "{} moved one cell "
+msgstr "{} переместился на одну клетку "
+
