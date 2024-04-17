@@ -161,10 +161,11 @@ class Game:
             self.map.move_evant((x, y), new)
             for client in clients:
                 await clients[client].put(
-                    f'{monster.name} moved one cell {self.orient[(dx, dy)]}'
-                    +'\n'
+                    '{} moved one cell '.format(monster.name)
+                    + '{}'.format(self.orient[(dx, dy)])
+                    + '\n'
                 )
                 if self.pl_list[client.name].position == new:
                     await clients[client].put(str(monster)+'\n')
-            print(f'Monster from ({x, y}) move to {new}')
+            print(f"Monster from ({x, y}) move to {new}")
             await asyncio.sleep(self.t_sleep)

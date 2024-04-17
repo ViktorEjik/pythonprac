@@ -82,9 +82,9 @@ class Player:
     def __str__(self) -> str:
         """Representetion of player."""
         ans = (
-            f'\tname: {self.name}\n'
-            f'\tinventnory: {list(self.inventory.keys())}\n'
-            f'\tpos: {self.position}'
+            '\tname: {}\n'.format(self.name)
+            + '\tinventnory: {}\n'.format(list(self.inventory.keys()))
+            + '\tpos: {}'.format(self.position)
         )
         return ans
 

@@ -40,10 +40,15 @@ class CMD_Game(cmd.Cmd):
         """Send server signal to move player on orientatuion."""
         self.socket.sendall(f'{orient}\n'.encode())
 
+    def do_locale(self, locale):
+        """Set locale"""
+        self.socket.sendall(('locale ' + locale +'\n').encode())
+
     def do_online(self, *args):
         self.socket.sendall('online\n'.encode())
 
     def do_movemonsters(self, args):
+        """On/Off move monsters"""
         if args == 'on':
             self.socket.sendall(('movemonsters on\n').encode())
         elif args == 'off':
