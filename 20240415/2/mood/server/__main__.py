@@ -16,7 +16,7 @@ async def main():
     if '--t_sleep' in args:
         ix = args.index('--t_sleep')
         t_sleep_monst = int(args[ix + 1])
-    
+
     server = await asyncio.start_server(Server(move_on, t_sleep_monst).new_client(), '0.0.0.0', 1337)
     async with server:
         await server.serve_forever()

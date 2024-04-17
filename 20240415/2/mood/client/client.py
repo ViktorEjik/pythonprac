@@ -42,7 +42,7 @@ class CMD_Game(cmd.Cmd):
 
     def do_locale(self, locale):
         """Set locale"""
-        self.socket.sendall(('locale ' + locale +'\n').encode())
+        self.socket.sendall(('locale ' + locale + '\n').encode())
 
     def do_online(self, *args):
         self.socket.sendall('online\n'.encode())
@@ -112,7 +112,7 @@ class CMD_Game(cmd.Cmd):
                         i += 2
                     case 'hp':
                         monster[args[i]] = int(args[i+1])
-                        i+=2
+                        i += 2
                     case 'coords':
                         monster[args[i]] = int(args[i+1]), int(args[i+2])
                         i += 3

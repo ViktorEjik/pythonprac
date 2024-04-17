@@ -37,20 +37,19 @@ class Map:
         """Return ivent on map position."""
         x, y = position
         return self.map[x][y]
-    
+
     def del_monster(self, position: tuple[int, int]):
         if not self.is_evant(position):
             return
         x, y = position
         self.monsters = list(filter(lambda z: z != (x, y, self.map[x][y]), self.monsters))
         self.map[x][y] = None
-        
 
     def is_evant(self, position: tuple[int, int]) -> bool:
         """Return True if on position in map has ivent."""
         x, y = position
         return self.map[x][y] is not None
-    
+
     def move_evant(self, now, new):
         self.map[new[0]][new[1]] = self.map[now[0]][now[1]].copy()
         self.del_monster(now)
@@ -61,7 +60,7 @@ class Map:
 
 class Game:
     """Base logic of game."""
-    
+
     orient = {
         (0, 1): 'down',
         (1, 0): 'right',
@@ -71,11 +70,11 @@ class Game:
 
     name_of_monster: list[str] = list_cows() + list(cows.cow_dict)
 
-    def __init__(self, map: Map, player: Player, sleep:int=30) -> None:
+    def __init__(self, map: Map, player: Player, sleep: int = 30) -> None:
         """Initiolased map and player list, with admin."""
         self.map = map
         self.adm = player
-        self.pl_list:dict[str: Player] = dict()
+        self.pl_list: dict[str: Player] = dict()
         self.t_sleep = sleep
 
     def addmon(self,
@@ -153,7 +152,7 @@ class Game:
             while True:
                 i = randrange(0, len(self.map.monsters))
                 x, y, monster = self.map.monsters.pop(i)
-                dx, dy = choice([(0,1), (1, 0), (0, -1), (-1, 0)])
+                dx, dy = choice([(0, 1), (1, 0), (0, -1), (-1, 0)])
                 if self.map.is_evant(((x + dx) % MAP_LENGTH, (y+dy) % MAP_LENGTH)):
                     continue
                 break

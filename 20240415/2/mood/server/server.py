@@ -16,17 +16,18 @@ LOCALES = {
     ("en_US"): gettext.NullTranslations(),
 }
 
+
 def _(text, locale):
     print('_', text)
     return LOCALES[locale].gettext(text)
 
+
 def ngettext(*args, locale):
     return LOCALES[locale].ngettext(*args)
 
+
 class Server:
     """A class that stores information about the game session and manages game processes."""
-
-
 
     def __init__(self, wandering_monster=False, t_sleep_mon=30) -> None:
         """Init game."""
@@ -116,7 +117,7 @@ class Server:
                             await self.clients[me].put(str(list(me.inventory.keys())))
 
                         case ['left' | 'right' | 'up' | 'down']:
-                            
+
                             res = self.game.go_to(comand[0], me)
                             ans = _('Move to {}', locale=me.locale).format(res[0])
                             if res[1]:
