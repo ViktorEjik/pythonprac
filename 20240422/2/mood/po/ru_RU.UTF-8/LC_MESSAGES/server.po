@@ -1,0 +1,139 @@
+# Russian (Russia) translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-04-17 13:27+0300\n"
+"PO-Revision-Date: 2024-04-17 11:33+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru_RU\n"
+"Language-Team: ru_RU <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.14.0\n"
+
+#: mood/server/server.py:60
+msgid "User {} connected"
+msgstr "Пользователь {} подключился"
+
+#: mood/server/server.py:94
+msgid "Moving monsters: "
+msgstr "Бродячие монстры: "
+
+#: mood/server/server.py:113
+msgid "Move to {}"
+msgstr "Вы переместились в {}"
+
+#: mood/server/server.py:120
+msgid "Added monster {} to "
+msgstr "Монстр {} добавлен в "
+
+#: mood/server/server.py:122
+msgid "saying \"{}\""
+msgstr "говорит \"{}\""
+
+#: mood/server/server.py:131
+msgid "Cannot add unknown monster"
+msgstr "Невозможно добавить неизвестного монстра"
+
+#: mood/server/server.py:134
+msgid ""
+"\n"
+"Replaced the old monster"
+msgstr ""
+"\n"
+"Старый монстр заменён"
+
+#: mood/server/server.py:140 mood/server/server.py:169
+#: mood/server/server.py:203
+msgid "User {} "
+msgstr "Пользователь {} "
+
+#: mood/server/server.py:141
+msgid "added monster {} "
+msgstr "добавил монстра {} "
+
+msgid "with {}, '
+msgstr "при помощи {}, "
+
+#: mood/server/server.py:142
+msgid "with {} hp"
+msgid_plural "with {} hps"
+msgstr[0] "c {} очком здоровья"
+msgstr[1] "с {} очками здоровья"
+msgstr[2] "с {} очками здоровья"
+
+#: mood/server/server.py:164 mood/server/server.py:176
+msgid ""
+"\n"
+"{} died"
+msgstr ""
+"\n"
+"{} мертв"
+
+msgid "Attacked {name}, damage {dmg} hp"
+msgid_plural "Attacked {name}, damage {dmg} hps"
+msgstr[0] "{name} атакован, нанесено {dmg} очко урона"
+msgstr[1] "{name} атакован, нанесено {dmg} очка урона"
+msgstr[2] "{name} атакован, нанесено {dmg} очков урона"
+
+
+#: mood/server/server.py:170 mood/server/server.py:204
+msgid "attacked monster {} "
+msgstr "атаковал монстра {} "
+
+#: mood/server/server.py:171 mood/server/server.py:205
+msgid "with {}, "
+msgstr "при помощи {}, "
+
+#: mood/server/server.py:172 mood/server/server.py:206
+msgid "damage {} hp"
+msgid_plural "damage {} hps"
+msgstr[0] "нанес {} еденицу урона"
+msgstr[1] "нанес {} еденицы урона"
+msgstr[2] "нанес {} едениц урона"
+
+#: mood/server/server.py:181
+msgid "No monster here"
+msgstr "Здесь нет монстра"
+
+#: mood/server/server.py:184
+msgid "No {} here"
+msgstr "{} нет здесь"
+
+#: mood/server/server.py:187
+msgid "Unknown weapon"
+msgstr "Неизвестное оружие"
+
+#: mood/server/server.py:194 mood/server/server.py:210
+msgid ""
+"\n"
+"{} now has {} hp"
+msgid_plural ""
+"\n"
+"{} now has {} hps"
+msgstr[0] ""
+"\n"
+"{} сейчас имеет {} очко здоровья"
+msgstr[1] ""
+"\n"
+"{} сейчас имеет {} очка здоровья"
+
+msgstr[2] ""
+"\n"
+"{} сейчас имеет {} очков здоровья"
+
+#: mood/server/server.py:220 mood/server/server.py:235
+msgid "{} disconnected"
+msgstr "{} отключился"
+
+msgid "{} moved one cell "
+msgstr "{} переместился на одну клетку "
+
