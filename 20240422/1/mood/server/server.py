@@ -18,7 +18,6 @@ LOCALES = {
 
 
 def _(text, locale):
-    print('_', text)
     return LOCALES[locale].gettext(text)
 
 
@@ -249,3 +248,16 @@ class Server:
     def new_client(self):
         """Return the client's request handler."""
         return self._client
+
+
+async def main():
+    print('Start working')
+    server = await asyncio.start_server(Server(False, 30).new_client(), '0.0.0.0', 1337)
+    print('activate server')
+    await asyncio.sleep(0)
+    async with server:
+        print('Server Forever')
+        await server.serve_forever()
+
+def start():
+    asyncio.run(main())
