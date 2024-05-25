@@ -153,10 +153,10 @@ class Game:
                 i = randrange(0, len(self.map.monsters))
                 x, y, monster = self.map.monsters.pop(i)
                 dx, dy = choice([(0, 1), (1, 0), (0, -1), (-1, 0)])
-                if self.map.is_evant(((x + dx) % MAP_LENGTH, (y+dy) % MAP_LENGTH)):
+                if self.map.is_evant(((x + dx) % MAP_LENGTH, (y + dy) % MAP_LENGTH)):
                     continue
                 break
-            new = ((x + dx) % MAP_LENGTH, (y+dy) % MAP_LENGTH)
+            new = ((x + dx) % MAP_LENGTH, (y + dy) % MAP_LENGTH)
             self.map.move_evant((x, y), new)
             for client in clients:
                 await clients[client].put(
@@ -165,6 +165,6 @@ class Game:
                     + '\n'
                 )
                 if self.pl_list[client.name].position == new:
-                    await clients[client].put(str(monster)+'\n')
+                    await clients[client].put(str(monster) + '\n')
             print(f"Monster from ({x, y}) move to {new}")
             await asyncio.sleep(self.t_sleep)

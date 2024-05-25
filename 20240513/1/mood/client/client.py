@@ -27,7 +27,6 @@ class CMD_Game(cmd.Cmd):
         """Init comand line."""
         self.socket = socket
         if not stdin:
-            
             socket.sendall('cows\n'.encode())
             self.name_of_monster = eval(socket.recv(1024).rstrip().decode())
             socket.sendall('invent\n'.encode())
@@ -112,13 +111,13 @@ class CMD_Game(cmd.Cmd):
             while i < len(args):
                 match args[i]:
                     case 'name' | 'hello':
-                        monster[args[i]] = args[i+1]
+                        monster[args[i]] = args[i + 1]
                         i += 2
                     case 'hp':
-                        monster[args[i]] = int(args[i+1])
+                        monster[args[i]] = int(args[i + 1])
                         i += 2
                     case 'coords':
-                        monster[args[i]] = int(args[i+1]), int(args[i+2])
+                        monster[args[i]] = int(args[i + 1]), int(args[i + 2])
                         i += 3
                     case _:
                         raise IncorectArgument

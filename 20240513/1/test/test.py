@@ -17,7 +17,7 @@ class TestRoot(unittest.TestCase):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(("localhost", 1337))
             s.sendall(('test\n').encode())
-            connect_ans = int(s.recv(1024).rstrip().decode())
+            _ = int(s.recv(1024).rstrip().decode())
             tst = CMD_Game(s, 'test')
             tst.prompt = ''
 
@@ -35,12 +35,12 @@ class TestRoot(unittest.TestCase):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(("localhost", 1337))
             s.sendall(('test\n').encode())
-            connect_ans = int(s.recv(1024).rstrip().decode())
+            _ = int(s.recv(1024).rstrip().decode())
             tst = CMD_Game(s, 'test')
             tst.prompt = ''
 
             tst.do_addmon("default coords 1 0 hp 19 hello 'u'")
-            response = s.recv(1024).rstrip().decode()
+            _ = s.recv(1024).rstrip().decode()
             tst.do_right('')
 
             with open('./test/move_monster.test', 'r') as f:
@@ -57,7 +57,7 @@ class TestRoot(unittest.TestCase):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(("localhost", 1337))
             s.sendall(('test\n').encode())
-            connect_ans = int(s.recv(1024).rstrip().decode())
+            _ = int(s.recv(1024).rstrip().decode())
             tst = CMD_Game(s, 'test')
             tst.do_addmon("milk coords 0 0 hp 19 hello 'U'")
             response = s.recv(1024).rstrip().decode()

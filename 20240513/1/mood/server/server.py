@@ -4,7 +4,6 @@ import asyncio
 import shlex
 import gettext
 import os
-import time
 
 from ..utils.logic import Game, Map, Player
 from ..utils import exeptions
@@ -122,7 +121,7 @@ class Server:
                             ans = _('Move to {}', locale=me.locale).format(res[0])
                             if res[1]:
                                 ans += '\n' + res[1]
-                            await self.clients[me].put(str((ans+'\n')))
+                            await self.clients[me].put(str((ans + '\n')))
 
                         case ['addmon', *args]:
                             ans = (
@@ -259,6 +258,7 @@ async def main():
     async with server:
         print('Server Forever')
         await server.serve_forever()
+
 
 def start():
     asyncio.run(main())

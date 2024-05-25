@@ -22,7 +22,7 @@ if sys.argv[1] == '--file' and not flag:
 
         with open(sys.argv[2]) as file:
             name = sys.argv[2].split('.')[0]
-            s.sendall((name+'\n').encode())
+            s.sendall((name + '\n').encode())
             connect_ans = int(s.recv(1024).rstrip().decode())
 
             if not connect_ans:
@@ -42,7 +42,7 @@ elif flag and sys.argv[4] == '--file':
 
         with open(sys.argv[5]) as file:
             name = sys.argv[5].split('/')[-1].split('.')[0]
-            s.sendall((name+'\n').encode())
+            s.sendall((name + '\n').encode())
             time.sleep(0.5)
             connect_ans = int(s.recv(1024).rstrip().decode())
 
@@ -66,7 +66,7 @@ else:
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((host, port))
-        s.sendall((name+'\n').encode())
+        s.sendall((name + '\n').encode())
         connect_ans = int(s.recv(1024).rstrip().decode())
 
         if not connect_ans:

@@ -4,13 +4,16 @@ from doit.tools import create_folder
 
 HTMLINDEX = "doc/build/html/index.html"
 
+
 def task_html():
     """Generate HTML docs."""
     return {
         'actions': ['sphinx-build -M html "doc/source" "doc/source/build"'],
-        'file_dep': ["doc/source/index.rst", "doc/source/API.rst", "mood/server/__init__.py", "mood/po/ru_RU.UTF-8/LC_MESSAGES/server.mo"],
+        'file_dep': ["doc/source/index.rst", "doc/source/API.rst",
+                     "mood/server/__init__.py", "mood/po/ru_RU.UTF-8/LC_MESSAGES/server.mo"],
         'targets': [HTMLINDEX]
     }
+
 
 def task_erase():
     """Erase all trash"""
@@ -27,6 +30,7 @@ def task_pot():
             'targets': ['server.pot'],
            }
 
+
 def task_po():
     """Update translations."""
     return {
@@ -35,12 +39,13 @@ def task_po():
             'targets': ['./mood/po/ru_RU.UTF-8/LC_MESSAGES/server.po'],
            }
 
+
 def task_il8n():
     """Compile translations."""
     return {
             'actions': [
-                (create_folder, [f'mood/po/ru_RU.UTF-8/LC_MESSAGES']),
-                f'pybabel compile -D server -d ./mood/po -l ru_RU.UTF-8'
+                (create_folder, ['mood/po/ru_RU.UTF-8/LC_MESSAGES']),
+                'pybabel compile -D server -d ./mood/po -l ru_RU.UTF-8'
                        ],
             'file_dep': ['./mood/po/ru_RU.UTF-8/LC_MESSAGES/server.po'],
             'targets': ['./mood/po/ru_RU.UTF-8/LC_MESSAGES/server.mo'],
