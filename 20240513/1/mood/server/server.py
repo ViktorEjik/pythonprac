@@ -18,10 +18,12 @@ LOCALES = {
 
 
 def _(text, locale):
+    """Translate in 1 form."""
     return LOCALES[locale].gettext(text)
 
 
 def ngettext(*args, locale):
+    """Translate on polyform."""
     return LOCALES[locale].ngettext(*args)
 
 
@@ -251,6 +253,7 @@ class Server:
 
 
 async def main():
+    """Start work server to test."""
     print('Start working')
     server = await asyncio.start_server(Server(False, 30).new_client(), '0.0.0.0', 1337)
     print('activate server')
@@ -261,4 +264,5 @@ async def main():
 
 
 def start():
+    """Start async server."""
     asyncio.run(main())
