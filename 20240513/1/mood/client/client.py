@@ -3,13 +3,14 @@
 import cmd
 import shlex
 import readline
+import time
 
 from ..utils.exeptions import IncorectArgument
 
 
 def msg_sendreciever(client, socket):
     """Print message from server to cli."""
-    while response := socket.recv(1024).rstrip().decode():
+    while response := socket.recv(2048).rstrip().decode():
         print(f"\n{response}\n{client.prompt}{readline.get_line_buffer()}", end="", flush=True)
 
 
@@ -25,10 +26,13 @@ class CMD_Game(cmd.Cmd):
                  ) -> None:
         """Init comand line."""
         self.socket = socket
-        socket.sendall('cows\n'.encode())
-        self.name_of_monster = eval(socket.recv(1024).rstrip().decode())
-        socket.sendall('invent\n'.encode())
-        self.player_inventory = eval(socket.recv(1024).rstrip().decode())
+        if not stdin:
+            
+            socket.sendall('cows\n'.encode())
+            self.name_of_monster = eval(socket.recv(1024).rstrip().decode())
+            socket.sendall('invent\n'.encode())
+            self.player_inventory = eval(socket.recv(1024).rstrip().decode())
+
         self.prompt = f'MUD({name})-> '
         self.intro = (
             '<<< Welcome to Python-MUD 0.1 >>>\n'

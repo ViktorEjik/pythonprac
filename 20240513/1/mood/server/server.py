@@ -4,6 +4,7 @@ import asyncio
 import shlex
 import gettext
 import os
+import time
 
 from ..utils.logic import Game, Map, Player
 from ..utils import exeptions
@@ -231,7 +232,7 @@ class Server:
 
                 elif q is receive:
                     receive = asyncio.create_task(self.clients[me].get())
-                    writer.write(f"{q.result()}\n".encode())
+                    writer.write(f"{q.result()}".encode())
                     await writer.drain()
 
         send.cancel()

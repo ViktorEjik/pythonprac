@@ -1,0 +1,10 @@
+left
+right
+up
+down
+addmon milk coords 0 0 hp 19 hello 'U'
+left
+right
+attack milk
+attack milk with spear
+exit
