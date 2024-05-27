@@ -7,6 +7,11 @@ license = {text = "MIT-0"}
 requires = ["flake8", "isort", "pydocstyle", "doit", "sphinx", "babel", "python-cowsay"]
 build-backend = "setuptools.build_meta"
 
+[project.scripts]
+moodserver = "mood.server:start"
+moodclient = "mood.client:run_client"
+
+
 [tool.setuptools.package-dir]
 MOOD="mood"
 

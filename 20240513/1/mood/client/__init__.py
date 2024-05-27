@@ -1,1 +1,1 @@
-from .client import CMD_Game
+from .client import CMD_Game, run_client
