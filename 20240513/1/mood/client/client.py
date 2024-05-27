@@ -23,7 +23,7 @@ class CMD_Game(cmd.Cmd):
     def __init__(self,
                  socket,
                  name,
-                 test_mode = False,
+                 test_mode=False,
                  completekey: str = "tab",
                  stdin=None,
                  stdout=None,
