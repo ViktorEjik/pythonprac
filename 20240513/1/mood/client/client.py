@@ -23,13 +23,14 @@ class CMD_Game(cmd.Cmd):
     def __init__(self,
                  socket,
                  name,
+                 test_mode = False,
                  completekey: str = "tab",
                  stdin=None,
                  stdout=None,
                  ) -> None:
         """Init comand line."""
         self.socket = socket
-        if not stdin:
+        if not stdin or not test_mode:
             socket.sendall('cows\n'.encode())
             self.name_of_monster = eval(socket.recv(1024).rstrip().decode())
             socket.sendall('invent\n'.encode())

@@ -1,0 +1,4 @@
+addmon default coords 0 0 hp 19 hello 'u'
+attack default with spear
+attack default
+attack default
