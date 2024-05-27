@@ -269,4 +269,3 @@ def run_client():
                 cli.cmdloop()
             else:
                 print(f'Can`t connect with {name}')
-
