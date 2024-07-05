@@ -2,9 +2,10 @@
 name="mood"
 version="0.0.1"
 license = {text = "MIT-0"}
+dependencies = ["python-cowsay"]
 
 [build-system]
-requires = ["flake8", "isort", "pydocstyle", "doit", "sphinx", "babel", "python-cowsay"]
+requires = ["flake8", "isort", "pydocstyle", "doit", "sphinx", "babel"]
 build-backend = "setuptools.build_meta"
 
 [project.scripts]
@@ -13,7 +14,7 @@ moodclient = "mood.client:run_client"
 
 
 [tool.setuptools.package-dir]
-MOOD="mood"
+mood="mood"
 
 [tool.setuptools.package-data]
-MOOD=["po/ru_RU.UTF-8/LC_MESSAGES/server.mo"]
+mood=["po/ru_RU.UTF-8/LC_MESSAGES/server.mo"]

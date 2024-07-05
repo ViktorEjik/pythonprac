@@ -268,5 +268,6 @@ def run_client():
                 request = threading.Thread(target=msg_sendreciever, args=(cli, cli.socket))
                 request.start()
                 cli.cmdloop()
+                time.sleep(1)
             else:
                 print(f'Can`t connect with {name}')
